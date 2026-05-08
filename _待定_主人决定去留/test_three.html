@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Three.js Test</title></head>
+<body style="background:#080810;margin:0">
+<canvas id="c" style="width:600px;height:400px;display:block"></canvas>
+<div id="err" style="color:#f00;font-family:monospace;font-size:12px;padding:10px"></div>
+<script type="importmap">{"imports":{"three":"./three.module.js","three/addons/":"./"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from './OrbitControls.js';
+
+const cv = document.getElementById('c');
+const err = document.getElementById('err');
+try {
+  const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true });
+  renderer.setSize(600, 400);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x080810);
+  const camera = new THREE.PerspectiveCamera(45, 600/400, 0.1, 100);
+  camera.position.set(0, 0, 5);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+  // Sphere
+  const geo = new THREE.SphereGeometry(1, 32, 32);
+  const mat = new THREE.MeshStandardMaterial({ color: 0x9b59b6, metalness: 0.5, roughness: 0.3 });
+  scene.add(new THREE.Mesh(geo, mat));
+
+  // Controls
+  const ctrl = new OrbitControls(camera, cv);
+  ctrl.enableDamping = true;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    ctrl.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+  err.textContent = 'OK - Three.js loaded successfully';
+  err.style.color = '#0f0';
+} catch(e) {
+  err.textContent = 'ERROR: ' + e.message + '\n' + (e.stack||'').split('\n').slice(0,4).join('\n');
+}
+</script>
+</body></html>
