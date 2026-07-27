@@ -1,8 +1,0 @@
-Over the years, gemologists have measured the infrared spectra of tens of thousands of rubies and sapphires. 
-The appearance of a peak at 3232 cm-1 has proven to be an extremely strong indicator of heat treatment (Atichat et al., 2011). 
-Crystals by definition display directional properties, and their spectra are no exception. Because the DRIFTS attachment samples 
-light moving through the gem in a variety of directions, it is more likely to reveal information such as the key 3232 cm-1 peak 
-(Hughes et al., 2007). 
-Thus, it should be the first choice for gemologists measuring infrared spectra.
-
-Virtually all readers are aware that many sapphires are heat treated to improve their value. This ranges from relatively low-temperature (800–1200°C) treatments on basalt-derived sapphires to lighten their color, through high-temperature (1400–1800°C) treatments on low-iron metamorphic sapphires to dissolve rutile silk and produce a blue color (geuda sapphire), to extremely high-temperature (1700–1900°C) treatments to diffuse titanium or beryllium into the stones to alter their color. A further recent development is the high-temperature heating of sapphire under pressure (HT+P) (Various labs, 2019).
