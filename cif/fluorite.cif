@@ -1,0 +1,37 @@
+data_fluorite
+_chemical_name_common              'Fluorite'
+_chemical_formula_sum               'CaF2'
+_cell_length_a                      5.4626
+_cell_length_b                      5.4626
+_cell_length_c                      5.4626
+_cell_angle_alpha                   90.00
+_cell_angle_beta                    90.00
+_cell_angle_gamma                   90.00
+_cell_formula_units_Z               4
+_symmetry_space_group_name_H-M      'P 1'
+_symmetry_Int_Tables_number         1
+_symmetry_original_H-M              'Fm-3m'
+_symmetry_original_Int_Tables_number 225
+_cell_volume                        162.99
+_citation_author_name               'Willis B.T.M.'
+_citation_year                      1965
+_citation_journal_full              'Nature 207, 755-756'
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+Ca1      Ca     0.000000   0.000000   0.000000 1.00
+Ca2      Ca     0.500000   0.500000   0.000000 1.00
+Ca3      Ca     0.500000   0.000000   0.500000 1.00
+Ca4      Ca     0.000000   0.500000   0.500000 1.00
+F5       F      0.250000   0.250000   0.250000 1.00
+F6       F      0.750000   0.750000   0.250000 1.00
+F7       F      0.750000   0.250000   0.750000 1.00
+F8       F      0.250000   0.750000   0.750000 1.00
+F9       F      0.250000   0.250000   0.750000 1.00
+F10      F      0.750000   0.750000   0.750000 1.00
+F11      F      0.750000   0.250000   0.250000 1.00
+F12      F      0.250000   0.750000   0.250000 1.00

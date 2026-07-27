@@ -1,0 +1,55 @@
+data_calcite
+_chemical_name_common              'Calcite'
+_chemical_formula_sum               'CaCO3'
+_cell_length_a                      4.9896
+_cell_length_b                      4.9896
+_cell_length_c                      17.0610
+_cell_angle_alpha                   90.00
+_cell_angle_beta                    90.00
+_cell_angle_gamma                   120.00
+_cell_formula_units_Z               6
+_symmetry_space_group_name_H-M      'P 1'
+_symmetry_Int_Tables_number         1
+_symmetry_original_H-M              'R-3c'
+_symmetry_original_Int_Tables_number 167
+_cell_volume                        367.80
+_citation_author_name               'Maslen E.N. et al.'
+_citation_year                      1995
+_citation_journal_full              'Acta Cryst. B51, 338-343'
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+Ca1      Ca     0.000000   0.000000   0.000000 1.00
+Ca2      Ca     0.666667   0.333333   0.333333 1.00
+Ca3      Ca     0.333333   0.666667   0.666667 1.00
+Ca4      Ca     0.000000   0.000000   0.500000 1.00
+Ca5      Ca     0.666667   0.333333   0.833333 1.00
+Ca6      Ca     0.333333   0.666667   0.166667 1.00
+C7       C      0.000000   0.000000   0.250000 1.00
+C8       C      0.666667   0.333333   0.583333 1.00
+C9       C      0.333333   0.666667   0.916667 1.00
+C10      C      0.000000   0.000000   0.750000 1.00
+C11      C      0.666667   0.333333   0.083333 1.00
+C12      C      0.333333   0.666667   0.416667 1.00
+O13      O      0.256700   0.000000   0.250000 1.00
+O14      O      0.000000   0.256700   0.250000 1.00
+O15      O      0.743300   0.743300   0.250000 1.00
+O16      O      0.923367   0.333333   0.583333 1.00
+O17      O      0.666667   0.590033   0.583333 1.00
+O18      O      0.409967   0.076633   0.583333 1.00
+O19      O      0.590033   0.666667   0.916667 1.00
+O20      O      0.333333   0.923367   0.916667 1.00
+O21      O      0.076633   0.409967   0.916667 1.00
+O22      O      0.256700   0.000000   0.750000 1.00
+O23      O      0.000000   0.256700   0.750000 1.00
+O24      O      0.743300   0.743300   0.750000 1.00
+O25      O      0.923367   0.333333   0.083333 1.00
+O26      O      0.666667   0.590033   0.083333 1.00
+O27      O      0.409967   0.076633   0.083333 1.00
+O28      O      0.590033   0.666667   0.416667 1.00
+O29      O      0.333333   0.923367   0.416667 1.00
+O30      O      0.076633   0.409967   0.416667 1.00

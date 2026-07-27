@@ -1,0 +1,3 @@
+Opal (欧泊) - SiO2·nH2O
+Amorphous (non-crystalline). Composed of ~150-400 nm diameter amorphous silica spheres in close-packed arrays.
+No crystal structure CIF exists.

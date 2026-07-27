@@ -1,0 +1,3 @@
+Charoite (紫硅碱钙石) - K(Ca,Na)2Si4O10(OH,F)·H2O
+Monoclinic? Structure not fully determined (complex rock-forming mineral with nanoscale intergrowths).
+No reliable single-crystal CIF available in public databases.
