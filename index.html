@@ -18,46 +18,65 @@
   --gold:#c9a84c;--gold2:#e8c968;--gold-dim:#8a7235;
   --text:#d4dae8;--text-dim:#8892a8;--text-bright:#f0f4ff;
   --border:#2a3654;--accent:#4a9eff;
+  --crystal-bg1:#060a14;--crystal-bg2:#0c1220;
+  --ci-bg:rgba(10,14,26,.92);
+  --shadow:0 4px 20px rgba(0,0,0,.4);
+  --overlay:rgba(0,0,0,.5);
 }
-html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+[data-theme="light"]{
+  --bg:#f7f5ef;--bg2:#ffffff;--bg3:#f0ece0;--bg4:#e4ddc8;
+  --gold:#a07c28;--gold2:#8a6520;--gold-dim:#b89848;
+  --text:#2c2a25;--text-dim:#6b6659;--text-bright:#1a1814;
+  --border:#d4cdb8;--accent:#2563b8;
+  --crystal-bg1:#e8e2d0;--crystal-bg2:#d4ccb4;
+  --ci-bg:rgba(255,253,246,.96);
+  --shadow:0 4px 16px rgba(0,0,0,.12);
+  --overlay:rgba(0,0,0,.35);
+}
+html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);overflow:hidden;transition:background .25s,color .25s}
 .app{display:flex;flex-direction:column;height:100vh}
-.header{height:52px;background:linear-gradient(135deg,#0d1424 0%,#151d35 100%);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0}
-.header-logo{font-family:"Noto Serif SC",serif;font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px}
+.header{height:52px;background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;flex-shrink:0;position:relative;z-index:30}
+.header-logo{font-family:"Noto Serif SC",serif;font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .header-logo span{color:var(--text-dim);font-weight:400;font-size:13px;margin-left:8px;letter-spacing:0}
-.header-meta{margin-left:auto;font-size:12px;color:var(--text-dim)}
-.main{display:flex;flex:1;overflow:hidden}
-.sidebar{width:260px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.header-meta{margin-left:auto;font-size:12px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:30%}
+.header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.icon-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text-dim);cursor:pointer;font-size:16px;transition:all .15s;font-family:inherit}
+.icon-btn:hover{background:var(--bg4);color:var(--text)}
+.menu-btn{display:none}
+.main{display:flex;flex:1;overflow:hidden;position:relative}
+.sidebar{width:260px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;transition:transform .25s ease;z-index:20}
 .sidebar::-webkit-scrollbar{width:4px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .sidebar-section{padding:10px 0;flex-shrink:0}
 .sidebar-title{font-size:11px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:2px;padding:0 16px 6px;font-weight:600;display:flex;align-items:center;gap:6px}
 .sidebar-count{background:var(--bg4);color:var(--text-dim);font-size:10px;padding:1px 6px;border-radius:8px;letter-spacing:0;text-transform:none}
 .sidebar-list{overflow:visible}
-.nav-item{display:flex;align-items:center;padding:6px 16px;cursor:pointer;font-size:13px;color:var(--text-dim);transition:all .15s;border-left:3px solid transparent;gap:8px}
+.nav-item{display:flex;align-items:center;padding:7px 16px;cursor:pointer;font-size:13px;color:var(--text-dim);transition:all .15s;border-left:3px solid transparent;gap:8px;user-select:none}
 .nav-item:hover{background:var(--bg3);color:var(--text)}
 .nav-item.active{background:var(--bg3);color:var(--gold2);border-left-color:var(--gold)}
 .nav-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .nav-badge{margin-left:auto;font-size:9px;padding:1px 5px;border-radius:3px;background:var(--bg4);color:var(--text-dim);letter-spacing:0;flex-shrink:0}
 .nav-badge.has3d{background:rgba(74,158,255,.15);color:var(--accent)}
 .nav-badge.no3d{background:rgba(160,100,200,.1);color:#a080c0}
-.content-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.crystal-panel{height:380px;background:linear-gradient(180deg,#060a14 0%,#0c1220 100%);border-bottom:1px solid var(--border);position:relative;flex-shrink:0;display:flex;overflow:hidden;transition:height .25s ease,border-bottom-width .25s ease}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:var(--overlay);z-index:15}
+.content-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.crystal-panel{height:380px;background:linear-gradient(180deg,var(--crystal-bg1) 0%,var(--crystal-bg2) 100%);border-bottom:1px solid var(--border);position:relative;flex-shrink:0;display:flex;overflow:hidden;transition:height .25s ease,border-bottom-width .25s ease}
 .crystal-panel.collapsed{height:0;border-bottom-width:0}
-#three-canvas{flex:1;outline:none;display:block}
-.crystal-info{width:300px;background:rgba(10,14,26,.92);border-left:1px solid var(--border);padding:16px;overflow-y:auto;flex-shrink:0;backdrop-filter:blur(8px)}
+#three-canvas{flex:1;outline:none;display:block;width:100%;height:100%;min-width:0;min-height:0}
+.crystal-info{width:300px;background:var(--ci-bg);border-left:1px solid var(--border);padding:16px;overflow-y:auto;flex-shrink:0;backdrop-filter:blur(8px)}
 .crystal-info::-webkit-scrollbar{width:4px}
 .crystal-info::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .ci-title{font-family:"Noto Serif SC",serif;font-size:16px;color:var(--gold);margin-bottom:2px}
 .ci-formula{font-size:13px;color:var(--text-dim);margin-bottom:10px;font-family:monospace}
 .ci-system{font-size:12px;color:var(--accent);margin-bottom:10px;padding:6px 10px;background:rgba(74,158,255,.1);border-radius:4px;border-left:2px solid var(--accent);line-height:1.6}
 .ci-props{font-size:12px;line-height:1.7}
-.ci-props .prop{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(42,54,84,.4);gap:8px}
+.ci-props .prop{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);gap:8px}
 .ci-props .prop-k{color:var(--text-dim);flex-shrink:0}
 .ci-props .prop-v{color:var(--text);text-align:right;font-weight:500}
 .ci-colors{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}
-.ci-color-swatch{width:22px;height:22px;border-radius:4px;border:1px solid rgba(255,255,255,.15)}
+.ci-color-swatch{width:22px;height:22px;border-radius:4px;border:1px solid rgba(128,128,128,.3)}
 .viewer-controls{position:absolute;top:10px;left:10px;display:flex;gap:5px;z-index:10;flex-wrap:wrap;max-width:calc(100% - 320px)}
-.vc-btn{padding:5px 11px;background:rgba(10,14,26,.75);border:1px solid var(--border);color:var(--text-dim);font-size:11px;cursor:pointer;border-radius:4px;transition:all .15s;backdrop-filter:blur(4px);font-family:inherit}
+.vc-btn{padding:5px 11px;background:var(--ci-bg);border:1px solid var(--border);color:var(--text-dim);font-size:11px;cursor:pointer;border-radius:4px;transition:all .15s;backdrop-filter:blur(4px);font-family:inherit;white-space:nowrap}
 .vc-btn:hover{background:var(--bg4);color:var(--text)}
 .vc-btn.active{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold2)}
 .vc-sep{width:1px;background:var(--border);margin:2px 4px;align-self:stretch}
@@ -82,36 +101,92 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
 .doc-content tr:nth-child(even) td{background:var(--bg2)}
 .doc-content hr{border:none;border-top:1px solid var(--border);margin:24px 0}
 .doc-content code{background:var(--bg3);padding:2px 6px;border-radius:3px;font-family:monospace;font-size:13px;color:var(--accent)}
+.doc-content a{color:var(--accent);text-decoration:none}
+.doc-content a:hover{text-decoration:underline}
+.doc-content img{max-width:100%;border-radius:6px;border:1px solid var(--border)}
 .loading{display:flex;align-items:center;justify-content:center;height:200px;color:var(--text-dim);font-size:14px}
 .error-msg{padding:40px;text-align:center;color:#e06080;line-height:2}
 .no-crystal{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-dim);font-size:14px;flex-direction:column;gap:10px;width:100%;text-align:center;padding:40px}
 .no-crystal-icon{font-size:40px;opacity:.3}
-/* KaTeX dark-theme overrides */
+/* KaTeX theme overrides */
 .katex-block{display:block;text-align:center;margin:14px 0;overflow-x:auto;padding:4px 0}
 .katex-inline{display:inline}
-.katex{color:#e8e0d0!important;font-size:1.05em}
-.katex .mord,.katex .mbin,.katex .mrel,.katex .mop,.katex .mopen,.katex .mclose,.katex .mpunct,.katex .minner{color:#e8e0d0!important}
+.katex{font-size:1.05em;color:var(--text)!important}
+.katex .mord,.katex .mbin,.katex .mrel,.katex .mop,.katex .mopen,.katex .mclose,.katex .mpunct,.katex .minner{color:var(--text)!important}
 .doc-area .katex-display{margin:14px 0}
-/* Table styling inside doc */
-.doc-area table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}
-.doc-area th,.doc-area td{border:1px solid var(--border);padding:8px 12px;text-align:left}
-.doc-area th{background:var(--bg3);color:var(--gold);font-weight:600}
-.doc-area tr:nth-child(even) td{background:rgba(255,255,255,.02)}
 .doc-area pre{background:var(--bg3);padding:12px 16px;border-radius:6px;overflow-x:auto;border:1px solid var(--border);font-size:13px}
+.doc-area pre code{background:transparent;padding:0;color:var(--text)}
+
+/* ===== Spectrum bar (visible absorption) ===== */
+.spectrum-card{margin:0 0 20px;border:1px solid var(--border);border-radius:8px;background:var(--bg2);padding:12px 14px 10px;position:relative}
+.spectrum-title{font-size:12px;color:var(--text-dim);letter-spacing:1px;margin-bottom:6px;display:flex;align-items:center;gap:8px;font-family:"Noto Serif SC",serif}
+.spectrum-title .dot{width:6px;height:6px;border-radius:50%;background:linear-gradient(90deg,#8b00ff,#00f,#0f0,#ff0,#f80,#f00);flex-shrink:0}
+.spectrum-wrap{width:100%;position:relative;user-select:none}
+.spectrum-svg{display:block;width:100%;height:auto}
+.spectrum-empty{font-size:12px;color:var(--text-dim);font-style:italic;padding:14px 0;text-align:center}
+@media (max-width:900px){
+  .spectrum-card{padding:10px 10px 8px;margin:0 0 14px}
+  .spectrum-title{font-size:11px;margin-bottom:4px}
+}
+
+/* ===== Mobile / responsive ===== */
+@media (max-width: 900px){
+  .header{padding:0 12px;gap:10px;height:48px}
+  .header-logo{font-size:15px;letter-spacing:1px}
+  .header-logo span{display:none}
+  .header-meta{font-size:11px;max-width:40%}
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;top:48px;bottom:0;left:0;width:280px;transform:translateX(-100%);box-shadow:var(--shadow)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-backdrop.open{display:block}
+  .crystal-panel{height:300px;flex-direction:column}
+  .crystal-info{width:100%;max-height:120px;border-left:none;border-top:1px solid var(--border);padding:10px 14px;font-size:12px;overflow-y:auto}
+  .ci-title{font-size:14px}
+  .ci-props{display:grid;grid-template-columns:repeat(2,1fr);gap:2px 12px;font-size:11px;line-height:1.5}
+  .ci-props .prop{border-bottom:none;padding:1px 0}
+  .ci-system{font-size:11px;padding:4px 8px;margin-bottom:6px}
+  .ci-formula,.ci-colors{display:none}
+  .viewer-controls{max-width:calc(100% - 20px);top:6px;left:6px}
+  .vc-btn{padding:4px 8px;font-size:10px}
+  .viewer-hint{font-size:9px;bottom:4px;left:6px}
+  .doc-content{padding:20px 16px 60px}
+  .doc-content h1{font-size:22px}
+  .doc-content h2{font-size:18px}
+  .doc-content h3{font-size:15px}
+  .doc-content p,.doc-content li{font-size:13px;line-height:1.8}
+}
+@media (max-width: 500px){
+  .crystal-panel{height:260px}
+  .crystal-info{max-height:100px}
+  .vc-btn{padding:3px 7px;font-size:10px}
+  .header-meta{display:none}
+}
 </style>
-<script defer src="https://cloud.umami.is/script.js" data-website-id="3c8fc7ee-2883-46a2-988a-52ef090a185c"></script>
 </head>
 <body>
 <div class="app">
   <div class="header">
+    <button class="icon-btn menu-btn" id="menu-btn" title="目录">☰</button>
     <div class="header-logo">宝石学系统笔记 <span>Gemology Notes · 正式版</span></div>
     <div class="header-meta" id="header-meta"></div>
+    <div class="header-actions">
+      <button class="icon-btn" id="theme-btn" title="切换主题">🌙</button>
+    </div>
   </div>
   <div class="main">
-    <div class="sidebar">
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+    <div class="sidebar" id="sidebar">
       <div class="sidebar-section">
         <div class="sidebar-title">宝石矿物各论 <span class="sidebar-count" id="nav-gems-count">29篇</span></div>
         <div class="sidebar-list" id="nav-gems"></div>
+      </div>
+      <div class="sidebar-section" style="border-top:1px solid var(--border)">
+        <div class="sidebar-title">玉石专题 <span class="sidebar-count">4篇</span></div>
+        <div class="sidebar-list" id="nav-jades"></div>
+      </div>
+      <div class="sidebar-section" style="border-top:1px solid var(--border)">
+        <div class="sidebar-title">有机宝石专题 <span class="sidebar-count">3篇</span></div>
+        <div class="sidebar-list" id="nav-organics"></div>
       </div>
       <div class="sidebar-section" style="border-top:1px solid var(--border)">
         <div class="sidebar-title">仪器与量子光学 <span class="sidebar-count">10篇</span></div>
@@ -171,6 +246,18 @@ const GEM_FILES = [
   {file:'方解石_系统笔记.md',name:'方解石 Calcite（冰洲石）',color:'#e0c0d0',struct:'calcite',cif:'cif/calcite.cif'},
 ];
 
+const JADE_FILES = [
+  {file:'翡翠_系统笔记.md',name:'翡翠 Jadeite（硬玉/A/B/C货鉴别）',color:'#2e8b57'},
+  {file:'软玉_系统笔记.md',name:'软玉 Nephrite（和田玉）',color:'#4a7c59'},
+  {file:'绿松石_系统笔记.md',name:'绿松石 Turquoise',color:'#40b0c0'},
+  {file:'其他玉石_系统笔记.md',name:'其他玉石（青金石/玉髓/岫玉/独山玉/孔雀石/蔷薇辉石/苏纪石等）',color:'#608050'},
+];
+const ORGANIC_FILES = [
+  {file:'珍珠_系统笔记.md',name:'珍珠 Pearl（天然/养殖/鉴别）',color:'#f0d8d0'},
+  {file:'琥珀_系统笔记.md',name:'琥珀 Amber（含蓝珀/蜜蜡/柯巴脂鉴别）',color:'#d08020'},
+  {file:'其他有机宝石_系统笔记.md',name:'其他有机宝石（珊瑚/象牙/煤精/玳瑁/砗磲/鹤顶红/硅化木·含保护声明）',color:'#a06040'},
+];
+
 const INSTRUMENT_FILES = [
   {file:'10倍放大镜光学设计原理.md',name:'10×放大镜光学设计原理'},
   {file:'偏光镜_结构原理与宝石学应用.md',name:'偏光镜：结构原理与宝石学应用'},
@@ -184,6 +271,237 @@ const INSTRUMENT_FILES = [
   {file:'长石族光学计算.md',name:'长石族光学计算'},
 ];
 
+/* ========= Visible absorption spectra (380-750nm) =========
+   lines: sharp absorption lines (nm)
+   bands: broad absorption bands {from,to,intensity(0-1)}
+   emiss: emission lines (nm, drawn bright; e.g. ruby R-line fluorescence)
+   diag: diagnostic sharp line wavelengths that MUST be labeled
+   Based on GIA, Handbook of Mineralogy, Burns (1993), Deer-Howie-Zussman
+*/
+const SPECTRA = {
+  '钻石':{
+    lines:[415,478,504,594], bands:[{from:450,to:475,intensity:0.25}], emiss:[], diag:[415]
+  },
+  '刚玉':{ // representative: ruby Cr³+ (蓝宝石/变色需单独切换，此处展示红宝石主型)
+    lines:[], bands:[{from:380,to:420,intensity:0.5},{from:500,to:580,intensity:0.55},{from:640,to:680,intensity:0.45},{from:440,to:480,intensity:0.35}], emiss:[693,694], diag:[450,694]
+  },
+  '金绿宝石':{
+    lines:[444,473,476,678,680], bands:[{from:395,to:420,intensity:0.35},{from:560,to:610,intensity:0.5},{from:640,to:665,intensity:0.25}], emiss:[], diag:[444,680]
+  },
+  '绿柱石':{ // 祖母绿主型
+    lines:[606,637,646,662,680,683,477,427], bands:[{from:580,to:630,intensity:0.2},{from:420,to:440,intensity:0.3}], emiss:[], diag:[680,683]
+  },
+  '尖晶石':{ // 红尖晶石Cr³+
+    lines:[460,470,480,540,590,656,675,685], bands:[{from:530,to:580,intensity:0.4},{from:625,to:655,intensity:0.25}], emiss:[], diag:[685,460,480]
+  },
+  '石榴石族':{ // 铁铝榴石(铁窗)主型
+    lines:[423,462,505,527,576,617], bands:[{from:490,to:590,intensity:0.3}], emiss:[], diag:[505,527,576]
+  },
+  '电气石':{ // 铬绿碧玺主型(Cr³+最诊断)
+    lines:[610,640,680,425,450], bands:[{from:450,to:500,intensity:0.25},{from:700,to:740,intensity:0.2}], emiss:[], diag:[680,450]
+  },
+  '锆石':{ // 稀土锐线谱
+    lines:[432.5,484,516,537.5,562.5,589.5,620,653.5,662.5,683,691], bands:[], emiss:[], diag:[653.5]
+  },
+  '托帕石':{ // 粉红/帝王Topaz (Cr³+)
+    lines:[682], bands:[{from:400,to:460,intensity:0.2},{from:600,to:640,intensity:0.15}], emiss:[], diag:[682]
+  },
+  '橄榄石':{
+    lines:[], bands:[{from:440,to:465,intensity:0.45},{from:465,to:485,intensity:0.5},{from:485,to:505,intensity:0.45},{from:620,to:700,intensity:0.2}], emiss:[], diag:[453,473,493]
+  },
+  '长石族':{ // 拉长石主型
+    lines:[], bands:[{from:600,to:640,intensity:0.2},{from:710,to:750,intensity:0.3}], emiss:[], diag:[]
+  },
+  '辉石族':{ // 锂辉石(紫锂辉)
+    lines:[], bands:[{from:520,to:570,intensity:0.35},{from:390,to:440,intensity:0.3}], emiss:[], diag:[]
+  },
+  '磷灰石':{ // 稀土Nd/Pr线
+    lines:[473,485,512,527,577,580,583,640,675,740], bands:[], emiss:[], diag:[580,583,527]
+  },
+  '蓝锥矿':{
+    lines:[], bands:[{from:430,to:540,intensity:0.4},{from:640,to:700,intensity:0.3}], emiss:[], diag:[]
+  },
+  '塔菲石':{
+    lines:[440,460,468,550,660,675,680], bands:[{from:450,to:480,intensity:0.3}], emiss:[], diag:[460,680,675]
+  },
+  '黝帘石':{ // 坦桑石(V³+致色，热处理后)
+    lines:[], bands:[{from:500,to:610,intensity:0.55},{from:440,to:470,intensity:0.3},{from:390,to:420,intensity:0.3}], emiss:[], diag:[595,528]
+  },
+  '堇青石':{ // Fe²+
+    lines:[], bands:[{from:440,to:475,intensity:0.3},{from:480,to:505,intensity:0.35},{from:520,to:545,intensity:0.3},{from:580,to:610,intensity:0.25}], emiss:[], diag:[456,492,533,593]
+  },
+  '蓝晶石':{ // Fe³+/Fe²+
+    lines:[435,445,455], bands:[{from:540,to:700,intensity:0.35}], emiss:[], diag:[435,445,455]
+  },
+  '硅铍石':{lines:[],bands:[],emiss:[],diag:[]},
+  '赛黄晶':{ // Dy³+稀土
+    lines:[580,740], bands:[{from:390,to:420,intensity:0.15}], emiss:[], diag:[580]
+  },
+  '方柱石':{ // 稀土线
+    lines:[652,663], bands:[{from:420,to:460,intensity:0.2}], emiss:[], diag:[652,663]
+  },
+  '硼铝石':{ // 色心
+    lines:[450,456], bands:[{from:410,to:470,intensity:0.25}], emiss:[], diag:[450,456]
+  },
+  '葡萄石':{
+    lines:[], bands:[{from:410,to:450,intensity:0.25},{from:570,to:610,intensity:0.15}], emiss:[], diag:[]
+  },
+  '紫硅碱钙石':{ // Mn³+
+    lines:[], bands:[{from:500,to:570,intensity:0.4},{from:430,to:470,intensity:0.2}], emiss:[], diag:[]
+  },
+  '欧泊':{lines:[],bands:[],emiss:[],diag:[]},
+  '萤石':{ // 色心
+    lines:[], bands:[{from:560,to:590,intensity:0.3},{from:430,to:460,intensity:0.2},{from:620,to:660,intensity:0.15}], emiss:[], diag:[]
+  },
+  '菱锰矿':{ // Mn²+
+    lines:[], bands:[{from:400,to:430,intensity:0.3},{from:430,to:460,intensity:0.4},{from:530,to:570,intensity:0.5}], emiss:[], diag:[550]
+  },
+  '方解石':{lines:[],bands:[],emiss:[],diag:[]},
+  '水晶':{ // 紫水晶主型
+    lines:[], bands:[{from:520,to:580,intensity:0.4},{from:380,to:400,intensity:0.5}], emiss:[], diag:[550]
+  }
+};
+
+function wlToX(wl, x0, x1){ // 380nm -> x0, 750nm -> x1 (linear)
+  return x0 + (wl-380)/(750-380)*(x1-x0);
+}
+
+function renderSpectrumSVG(key){
+  // Returns HTML string for spectrum card, or '' if no data or non-gem key
+  const data = SPECTRA[key];
+  if(!data) return '';
+  const hasFeatures = (data.lines&&data.lines.length)||(data.bands&&data.bands.length)||(data.emiss&&data.emiss.length);
+  const W=820, H=90;         // internal SVG coord; scale via CSS
+  const padL=38, padR=18, padT=22, padB=28;
+  const barH = 22;
+  const barY = padT;
+  const x0 = padL, x1 = W-padR;
+  // Rainbow stops (visible spectrum)
+  const stops = [
+    [380,'#5500aa'], [420,'#3300ff'], [450,'#0044ff'], [470,'#0099ff'],
+    [490,'#00cc66'], [520,'#00dd00'], [560,'#aadd00'], [585,'#ffdd00'],
+    [610,'#ff8800'], [650,'#ff3300'], [700,'#cc0000'], [750,'#660000']
+  ];
+  let gradStops='';
+  stops.forEach(s=>{
+    const pct = ((s[0]-380)/(750-380))*100;
+    gradStops+=`<stop offset="${pct.toFixed(1)}%" stop-color="${s[1]}"/>`;
+  });
+  // Draw bands first (behind lines)
+  let bandSvg='';
+  if(data.bands){
+    data.bands.forEach(b=>{
+      const xa = wlToX(Math.max(b.from,380),x0,x1);
+      const xb = wlToX(Math.min(b.to,750),x0,x1);
+      const width = Math.max(2,xb-xa);
+      const op = b.intensity||0.35;
+      bandSvg+=`<rect x="${xa}" y="${barY}" width="${width}" height="${barH}" fill="#000" opacity="${op}"/>`;
+    });
+  }
+  // Sharp lines
+  let lineSvg='';
+  const drawnLabels = new Set();
+  const labelPositions = []; // {x,nm,diag}
+  if(data.lines){
+    data.lines.forEach(wl=>{
+      if(wl<380||wl>750) return;
+      const x = wlToX(wl,x0,x1);
+      const isDiag = data.diag && data.diag.some(d=>Math.abs(d-wl)<1.5);
+      const w = isDiag?2.2:1.2;
+      lineSvg+=`<rect x="${x-w/2}" y="${barY-3}" width="${w}" height="${barH+6}" fill="#000" opacity="${isDiag?1:0.75}"/>`;
+      labelPositions.push({x, wl, diag:isDiag});
+    });
+  }
+  // Emission lines (bright, e.g. ruby R-lines)
+  let emissSvg='';
+  if(data.emiss){
+    data.emiss.forEach(wl=>{
+      if(wl<380||wl>750) return;
+      const x = wlToX(wl,x0,x1);
+      emissSvg+=`<rect x="${x-1.2}" y="${barY-2}" width="2.4" height="${barH+4}" fill="#fff" opacity="0.95"/>`;
+      labelPositions.push({x, wl, diag:true, emiss:true});
+    });
+  }
+  // Wavelength axis ticks + labels (every 50 nm)
+  let ticks='', labels='';
+  for(let wl=400;wl<=700;wl+=50){
+    const x = wlToX(wl,x0,x1);
+    const isMajor = (wl%100===0);
+    ticks+=`<line x1="${x}" y1="${barY+barH}" x2="${x}" y2="${barY+barH+(isMajor?6:3)}" stroke="currentColor" stroke-width="1" opacity="0.4"/>`;
+    if(isMajor){
+      labels+=`<text x="${x}" y="${barY+barH+18}" font-size="10" text-anchor="middle" fill="currentColor" opacity="0.65" font-family="ui-monospace,SFMono-Regular,Menlo,monospace">${wl}</text>`;
+    }
+  }
+  // Axis label (nm)
+  const axisLabel=`<text x="${x1}" y="${barY+barH+18}" font-size="9" text-anchor="end" fill="currentColor" opacity="0.5">nm</text>`;
+
+  // Labels above bar: ALL sharp lines get wavelength numbers.
+  // Diag lines: bold black, font 10. Non-diag: dimmer, font 9, only if not too close to a labeled one.
+  labelPositions.sort((a,b)=>a.x-b.x);
+  let lastX = -100;
+  let labelSvg='';
+  // Two passes: first pass diag (bold), second pass non-diag (lighter, smaller; skip if too close to already placed label)
+  const placeLabel=(lp,isPrimary)=>{
+    const txt = Number.isInteger(lp.wl) ? String(lp.wl) : lp.wl.toFixed(1);
+    const fontSize = isPrimary?10:8.5;
+    const textW = txt.length*fontSize*0.62;
+    let tx = lp.x;
+    if(tx - textW/2 < x0) tx = x0 + textW/2;
+    if(tx + textW/2 > x1) tx = x1 - textW/2;
+    if(tx - textW/2 < lastX + 3) tx = lastX + 3 + textW/2;
+    lastX = tx + textW/2;
+    let color;
+    if(lp.emiss) color = '#ffaa22';
+    else if(isPrimary) color = 'currentColor';
+    else color = 'currentColor';
+    const opacity = isPrimary?1:0.6;
+    const fontWeight = isPrimary?'700':'500';
+    const tickH = isPrimary?12:8;
+    const tickY1 = barY-2;
+    labelSvg+=`<line x1="${lp.x}" y1="${tickY1}" x2="${lp.x}" y2="${barY-tickH}" stroke="${color}" stroke-width="1" opacity="${opacity}"/>`;
+    labelSvg+=`<text x="${tx}" y="${barY-tickH-2}" font-size="${fontSize}" text-anchor="middle" fill="${color}" opacity="${opacity}" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-weight="${fontWeight}">${txt}</text>`;
+  };
+  labelPositions.filter(lp=>lp.diag).forEach(lp=>placeLabel(lp,true));
+  labelPositions.filter(lp=>!lp.diag).forEach(lp=>placeLabel(lp,false));
+
+  // Purple/red fade at edges for out-of-range near-UV/IR
+  const edgeFade = `
+    <rect x="${x0}" y="${barY}" width="10" height="${barH}" fill="url(#edgeL)"/>
+    <rect x="${x1-10}" y="${barY}" width="10" height="${barH}" fill="url(#edgeR)"/>
+  `;
+
+  const svg = `
+<svg class="spectrum-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="color:var(--text)">
+  <defs>
+    <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2="0">${gradStops}</linearGradient>
+    <linearGradient id="edgeL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="edgeR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <!-- rainbow bar -->
+  <rect x="${x0}" y="${barY}" width="${x1-x0}" height="${barH}" fill="url(#rainbow)" rx="2"/>
+  ${bandSvg}
+  ${lineSvg}
+  ${emissSvg}
+  ${edgeFade}
+  ${labelSvg}
+  ${ticks}
+  ${labels}
+  ${axisLabel}
+</svg>`;
+
+  const noteNoFeat = hasFeatures ? '' : '<div class="spectrum-empty">可见光区无明显诊断吸收线</div>';
+  return `<div class="spectrum-card">
+    <div class="spectrum-title"><span class="dot"></span>可见吸收光谱（380–750 nm）</div>
+    <div class="spectrum-wrap">${svg}${noteNoFeat}</div>
+  </div>`;
+}
+
 const AUX_FILES = [
   {file:'序.md',name:'序'},
   {file:'README.md',name:'README 索引'},
@@ -194,6 +512,8 @@ const AUX_FILES = [
 // ==================== 导航构建 ====================
 function buildNav(){
   const gEl=document.getElementById('nav-gems');
+  const jEl=document.getElementById('nav-jades');
+  const oEl=document.getElementById('nav-organics');
   const iEl=document.getElementById('nav-instruments');
   const aEl=document.getElementById('nav-aux');
   let gemsWithCif=0,gemsNoCif=0;
@@ -214,6 +534,22 @@ function buildNav(){
   // Update count badge
   const countEl=document.getElementById('nav-gems-count');
   if(countEl)countEl.textContent=`29篇 · ${gemsWithCif}个3D`;
+  JADE_FILES.forEach((f,i)=>{
+    const d=document.createElement('div');
+    d.className='nav-item';
+    d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}<span class="nav-badge no3d">玉石</span>`;
+    d.onclick=()=>loadFile(f.file,'jade');
+    d.dataset.file=f.file;
+    jEl.appendChild(d);
+  });
+  ORGANIC_FILES.forEach((f,i)=>{
+    const d=document.createElement('div');
+    d.className='nav-item';
+    d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}<span class="nav-badge no3d">有机</span>`;
+    d.onclick=()=>loadFile(f.file,'organic');
+    d.dataset.file=f.file;
+    oEl.appendChild(d);
+  });
   INSTRUMENT_FILES.forEach(f=>{
     const d=document.createElement('div');
     d.className='nav-item';
@@ -331,6 +667,22 @@ async function loadFile(file,type,gemIdx){
       return `<span class="katex-inline">${m.src}</span>`;
     });
     content.innerHTML=html;
+    // Inject visible absorption spectrum bar before the first <h2> (概述) for gem notes
+    if(type==='gem'&&gemIdx!==undefined){
+      const gem=GEM_FILES[gemIdx];
+      const cnName = gem.name.split(/\s/)[0]; // extract Chinese part before first space
+      const specHtml = renderSpectrumSVG(cnName);
+      if(specHtml){
+        const firstH2 = content.querySelector('h2');
+        if(firstH2){
+          const wrap = document.createElement('div');
+          wrap.innerHTML = specHtml;
+          firstH2.parentNode.insertBefore(wrap.firstElementChild, firstH2);
+        }else{
+          content.insertAdjacentHTML('afterbegin', specHtml);
+        }
+      }
+    }
     // Render math with KaTeX auto-render (wait for KaTeX to load if needed)
     const renderMath=()=>{
       if(window.renderMathInElement){
@@ -384,8 +736,12 @@ async function loadFile(file,type,gemIdx){
       showNoCrystal(gem.name+' 的CIF待补充');
     }
   }else{
-    showNoCrystal(type==='instrument'?'仪器/光学专题文档无3D晶体模型':'辅助文档');
-    const info=INSTRUMENT_FILES.find(f=>f.file===file)||AUX_FILES.find(f=>f.file===file);
+    const msg = type==='instrument'?'仪器/光学专题文档无3D晶体模型'
+              : type==='jade'?'玉石专题为多矿物集合体，无单晶3D模型'
+              : type==='organic'?'有机宝石为生物成因材料，无单晶3D模型'
+              : '辅助文档';
+    showNoCrystal(msg);
+    const info=JADE_FILES.find(f=>f.file===file)||ORGANIC_FILES.find(f=>f.file===file)||INSTRUMENT_FILES.find(f=>f.file===file)||AUX_FILES.find(f=>f.file===file);
     document.getElementById('header-meta').textContent=info?info.name:'';
   }
 }
@@ -394,6 +750,8 @@ async function loadFile(file,type,gemIdx){
 let scene,camera,renderer,controls,crystalGroup;
 let showAtoms=true,showBonds=true,showCell=true,autoRotate=false;
 let animId;
+// Tracked materials/lights for theme switching
+const _tracked={atomMats:[],bondMats:[],cellMats:[],polyMats:[],lights:{}};
 
 // CPK colors (standard crystallographic color scheme)
 const AC={
@@ -412,24 +770,32 @@ const AR={
   X:0.80,Y:0.65,M1:0.62,M2:0.65,
 };
 
+function getCanvasSize(){
+  const panel=document.getElementById('crystal-panel');
+  const isMobile=window.innerWidth<=900;
+  const infoEl=document.querySelector('.crystal-info');
+  const infoW=isMobile?0:(infoEl?infoEl.offsetWidth:300);
+  const infoH=isMobile&&infoEl?infoEl.offsetHeight:0;
+  return {w:panel.clientWidth-infoW,h:panel.clientHeight-infoH};
+}
 function initThree(){
   const canvas=document.getElementById('three-canvas');
-  const panel=document.getElementById('crystal-panel');
-  const w=panel.clientWidth-300, h=panel.clientHeight;
+  const {w,h}=getCanvasSize();
   scene=new THREE.Scene();
-  scene.background=new THREE.Color(0x060a14);
+  // Canvas is transparent so crystal-panel CSS gradient shows through (auto follows theme)
   camera=new THREE.PerspectiveCamera(45,w/h,0.1,500);
   camera.position.set(8,6,10);
-  renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-  renderer.setSize(w,h);
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setSize(w,h,false);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setClearColor(0x000000,0);
   controls=new THREE.OrbitControls(camera,canvas);
   controls.enableDamping=true;controls.dampingFactor=0.08;
   controls.target.set(2,2,2);
-  scene.add(new THREE.AmbientLight(0x506080,0.7));
-  const key=new THREE.DirectionalLight(0xfff0d0,0.9);key.position.set(10,15,12);scene.add(key);
-  const fill=new THREE.DirectionalLight(0x80a0ff,0.4);fill.position.set(-6,4,-6);scene.add(fill);
-  const rim=new THREE.PointLight(0xc9a84c,0.5,40);rim.position.set(-4,6,-10);scene.add(rim);
+  _tracked.lights.ambient=new THREE.AmbientLight(0x506080,0.7);scene.add(_tracked.lights.ambient);
+  const key=new THREE.DirectionalLight(0xfff0d0,0.9);key.position.set(10,15,12);scene.add(key);_tracked.lights.key=key;
+  const fill=new THREE.DirectionalLight(0x80a0ff,0.4);fill.position.set(-6,4,-6);scene.add(fill);_tracked.lights.fill=fill;
+  const rim=new THREE.PointLight(0xc9a84c,0.5,40);rim.position.set(-4,6,-10);scene.add(rim);_tracked.lights.rim=rim;
   crystalGroup=new THREE.Group();scene.add(crystalGroup);
   window.addEventListener('resize',onResize);
   animate();
@@ -438,10 +804,10 @@ function initThree(){
 function onResize(){
   const panel=document.getElementById('crystal-panel');
   if(panel.classList.contains('collapsed'))return;
-  const w=panel.clientWidth-300,h=panel.clientHeight;
+  const {w,h}=getCanvasSize();
   if(w<100||h<100)return;
   camera.aspect=w/h;camera.updateProjectionMatrix();
-  renderer.setSize(w,h);
+  renderer.setSize(w,h,false);
 }
 
 // fractional -> Cartesian for general triclinic/monoclinic/orthorhombic/hexagonal/tetragonal/cubic cells
@@ -548,6 +914,7 @@ function addCellBox(M,nx,ny,nz){
   ];
   const g=new THREE.BufferGeometry().setFromPoints(pts);
   const mat=new THREE.LineDashedMaterial({color:0xc9a84c,dashSize:0.12,gapSize:0.08,opacity:0.6,transparent:true});
+  _tracked.cellMats.push(mat);
   const line=new THREE.Line(g,mat);line.computeLineDistances();
   crystalGroup.add(line);
 }
@@ -585,6 +952,7 @@ function buildCrystalFromCIF(cif,supercellN){
   if(showBonds){
     // Use typical bond cutoffs by element pairs
     const bondMat=new THREE.MeshPhongMaterial({color:0x7090b0,shininess:20});
+    _tracked.bondMats.push(bondMat);
     const cutoffs={
       'C-C':1.7,'C-O':1.5,'Si-O':1.8,'Al-O':2.1,'Mg-O':2.3,'Ca-O':2.6,
       'Fe-O':2.3,'Mn-O':2.3,'Na-O':2.6,'K-O':2.9,'Ti-O':2.2,'Be-O':1.8,
@@ -613,6 +981,8 @@ function buildCrystalFromCIF(cif,supercellN){
     atoms.forEach(a=>{
       const g=new THREE.SphereGeometry(a.r*0.9,14,10);
       const mat=new THREE.MeshPhongMaterial({color:a.c,shininess:60,specular:0x333333});
+      mat.userData.origColor=new THREE.Color(a.c);
+      _tracked.atomMats.push(mat);
       const mesh=new THREE.Mesh(g,mat);mesh.position.copy(a.vec);
       crystalGroup.add(mesh);
     });
@@ -627,6 +997,7 @@ function buildCrystalFromCIF(cif,supercellN){
   controls.target.copy(center);
   camera.position.copy(center).add(new THREE.Vector3(diag*0.75,diag*0.6,diag*0.9));
   controls.update();
+  apply3DTheme();
 }
 
 // ---- display crystal from CIF ----
@@ -735,6 +1106,52 @@ function clearCrystal(){
       else c.material.dispose();
     }
   }
+  _tracked.atomMats.length=0;
+  _tracked.bondMats.length=0;
+  _tracked.cellMats.length=0;
+  _tracked.polyMats.length=0;
+}
+
+// Apply lighting/material tweaks for current theme
+function apply3DTheme(){
+  if(!scene)return;
+  const theme=document.documentElement.getAttribute('data-theme')||'dark';
+  const light=_tracked.lights;
+  if(light.ambient)light.ambient.intensity=theme==='light'?0.95:0.7;
+  if(light.key)light.key.intensity=theme==='light'?1.05:0.9;
+  if(light.fill)light.fill.intensity=theme==='light'?0.65:0.4;
+  if(light.rim)light.rim.intensity=theme==='light'?0.4:0.5;
+  // Dark atoms (e.g. Carbon 0x303030) become lighter in light theme
+  _tracked.atomMats.forEach(m=>{
+    const orig=m.userData.origColor||m.color;
+    const r=Math.round(orig.r*255),g=Math.round(orig.g*255),b=Math.round(orig.b*255);
+    const lum=0.299*r+0.587*g+0.114*b;
+    if(theme==='light'){
+      if(lum<110){
+        // Lift dark atoms to a visible slate-gray with subtle self-illumination
+        const lift=Math.max(120,Math.round(lum+90));
+        const f=Math.min(1,lift/255);
+        m.color.setRGB(
+          Math.min(1,(r/255)*0.5+f*0.55),
+          Math.min(1,(g/255)*0.5+f*0.55),
+          Math.min(1,(b/255)*0.5+f*0.55)
+        );
+        m.emissive.copy(m.color);
+        m.emissiveIntensity=0.25;
+      }else{
+        m.color.copy(orig);
+        m.emissive.setHex(0x000000);m.emissiveIntensity=0;
+      }
+    }else{
+      m.color.copy(orig);
+      m.emissive.setHex(0x000000);m.emissiveIntensity=0;
+    }
+  });
+  // Bonds / cell lines slightly darker in light theme for contrast
+  const bondColor=theme==='light'?0x5a7088:0x7090b0;
+  _tracked.bondMats.forEach(m=>m.color.setHex(bondColor));
+  const cellColor=theme==='light'?0x8a6a20:0xc9a84c;
+  _tracked.cellMats.forEach(m=>m.color.setHex(cellColor));
 }
 
 function showNoCrystal(msg){
@@ -760,10 +1177,53 @@ function animate(){
   if(renderer&&scene&&camera)renderer.render(scene,camera);
 }
 
+// ==================== 主题切换 ====================
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme',theme);
+  const btn=document.getElementById('theme-btn');
+  if(btn)btn.textContent=theme==='light'?'☀':'🌙';
+  try{localStorage.setItem('gem-theme',theme);}catch(e){}
+  apply3DTheme();
+}
+function initTheme(){
+  let saved=null;
+  try{saved=localStorage.getItem('gem-theme');}catch(e){}
+  if(saved==='light'||saved==='dark'){
+    applyTheme(saved);
+  }else{
+    const prefersLight=window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches;
+    applyTheme(prefersLight?'light':'dark');
+  }
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('#theme-btn');
+  if(t){
+    const cur=document.documentElement.getAttribute('data-theme')||'dark';
+    applyTheme(cur==='dark'?'light':'dark');
+  }
+});
+
+// ==================== 移动端侧边栏 ====================
+function toggleSidebar(open){
+  const sb=document.getElementById('sidebar');
+  const bd=document.getElementById('sidebar-backdrop');
+  const isOpen=open!==undefined?open:!sb.classList.contains('open');
+  sb.classList.toggle('open',isOpen);
+  bd.classList.toggle('open',isOpen);
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('#menu-btn')){toggleSidebar();return;}
+  if(e.target.closest('#sidebar-backdrop')){toggleSidebar(false);return;}
+  // On mobile, tapping a nav item closes the sidebar
+  if(window.innerWidth<=900 && e.target.closest('.nav-item')){toggleSidebar(false);}
+});
+
 // ==================== 启动 ====================
+initTheme();
 buildNav();
 initThree();
 loadFile('钻石_系统笔记.md','gem',0);
 </script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="3c8fc7ee-2883-46a2-988a-52ef090a185c"></script>
 </body>
 </html>
