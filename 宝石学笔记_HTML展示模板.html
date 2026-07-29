@@ -79,7 +79,6 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
 .vc-btn{padding:5px 11px;background:var(--ci-bg);border:1px solid var(--border);color:var(--text-dim);font-size:11px;cursor:pointer;border-radius:4px;transition:all .15s;backdrop-filter:blur(4px);font-family:inherit;white-space:nowrap}
 .vc-btn:hover{background:var(--bg4);color:var(--text)}
 .vc-btn.active{background:rgba(201,168,76,.2);border-color:var(--gold);color:var(--gold2)}
-.vc-btn.disabled{opacity:0.35;cursor:not-allowed;pointer-events:none}
 .vc-sep{width:1px;background:var(--border);margin:2px 4px;align-self:stretch}
 .viewer-hint{position:absolute;bottom:8px;left:12px;font-size:10px;color:var(--text-dim);opacity:.5;z-index:10;pointer-events:none}
 .doc-area{flex:1;overflow-y:auto;background:var(--bg)}
@@ -182,14 +181,6 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
         <div class="sidebar-list" id="nav-gems"></div>
       </div>
       <div class="sidebar-section" style="border-top:1px solid var(--border)">
-        <div class="sidebar-title">玉石专题 <span class="sidebar-count">4篇</span></div>
-        <div class="sidebar-list" id="nav-jades"></div>
-      </div>
-      <div class="sidebar-section" style="border-top:1px solid var(--border)">
-        <div class="sidebar-title">有机宝石专题 <span class="sidebar-count">3篇</span></div>
-        <div class="sidebar-list" id="nav-organics"></div>
-      </div>
-      <div class="sidebar-section" style="border-top:1px solid var(--border)">
         <div class="sidebar-title">仪器与量子光学 <span class="sidebar-count">10篇</span></div>
         <div class="sidebar-list" id="nav-instruments"></div>
       </div>
@@ -245,18 +236,6 @@ const GEM_FILES = [
   {file:'萤石_系统笔记.md',name:'萤石 Fluorite',color:'#80e0c0',struct:'fluorite',cif:'cif/fluorite.cif'},
   {file:'菱锰矿_系统笔记.md',name:'菱锰矿 Rhodochrosite',color:'#e06080',struct:'rhodochrosite',cif:'cif/rhodochrosite.cif'},
   {file:'方解石_系统笔记.md',name:'方解石 Calcite（冰洲石）',color:'#e0c0d0',struct:'calcite',cif:'cif/calcite.cif'},
-];
-
-const JADE_FILES = [
-  {file:'翡翠_系统笔记.md',name:'翡翠 Jadeite（硬玉/A/B/C货鉴别）',color:'#2e8b57'},
-  {file:'软玉_系统笔记.md',name:'软玉 Nephrite（和田玉）',color:'#4a7c59'},
-  {file:'绿松石_系统笔记.md',name:'绿松石 Turquoise',color:'#40b0c0'},
-  {file:'其他玉石_系统笔记.md',name:'其他玉石（青金石/玉髓/岫玉/独山玉/孔雀石/蔷薇辉石/苏纪石等）',color:'#608050'},
-];
-const ORGANIC_FILES = [
-  {file:'珍珠_系统笔记.md',name:'珍珠 Pearl（天然/养殖/鉴别）',color:'#f0d8d0'},
-  {file:'琥珀_系统笔记.md',name:'琥珀 Amber（含蓝珀/蜜蜡/柯巴脂鉴别）',color:'#d08020'},
-  {file:'其他有机宝石_系统笔记.md',name:'其他有机宝石（珊瑚/象牙/煤精/玳瑁/砗磲/鹤顶红/硅化木·含保护声明）',color:'#a06040'},
 ];
 
 const INSTRUMENT_FILES = [
@@ -513,8 +492,6 @@ const AUX_FILES = [
 // ==================== 导航构建 ====================
 function buildNav(){
   const gEl=document.getElementById('nav-gems');
-  const jEl=document.getElementById('nav-jades');
-  const oEl=document.getElementById('nav-organics');
   const iEl=document.getElementById('nav-instruments');
   const aEl=document.getElementById('nav-aux');
   let gemsWithCif=0,gemsNoCif=0;
@@ -535,22 +512,6 @@ function buildNav(){
   // Update count badge
   const countEl=document.getElementById('nav-gems-count');
   if(countEl)countEl.textContent=`29篇 · ${gemsWithCif}个3D`;
-  JADE_FILES.forEach((f,i)=>{
-    const d=document.createElement('div');
-    d.className='nav-item';
-    d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}<span class="nav-badge no3d">玉石</span>`;
-    d.onclick=()=>loadFile(f.file,'jade');
-    d.dataset.file=f.file;
-    jEl.appendChild(d);
-  });
-  ORGANIC_FILES.forEach((f,i)=>{
-    const d=document.createElement('div');
-    d.className='nav-item';
-    d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}<span class="nav-badge no3d">有机</span>`;
-    d.onclick=()=>loadFile(f.file,'organic');
-    d.dataset.file=f.file;
-    oEl.appendChild(d);
-  });
   INSTRUMENT_FILES.forEach(f=>{
     const d=document.createElement('div');
     d.className='nav-item';
@@ -721,8 +682,7 @@ async function loadFile(file,type,gemIdx){
         if(gem.cif.endsWith('.cif')){
           const cifText=await resp.text();
           currentCifData=parseCIF(cifText);
-          displayCrystal(currentCifData,gem);
-
+          showCrystalFromCIF(currentCifData,gem);
         }else{
           // .txt placeholder: charoite (结构未解析) or opal (非晶质)
           if(gem.name.includes('欧泊')){
@@ -738,12 +698,8 @@ async function loadFile(file,type,gemIdx){
       showNoCrystal(gem.name+' 的CIF待补充');
     }
   }else{
-    const msg = type==='instrument'?'仪器/光学专题文档无3D晶体模型'
-              : type==='jade'?'玉石专题为多矿物集合体，无单晶3D模型'
-              : type==='organic'?'有机宝石为生物成因材料，无单晶3D模型'
-              : '辅助文档';
-    showNoCrystal(msg);
-    const info=JADE_FILES.find(f=>f.file===file)||ORGANIC_FILES.find(f=>f.file===file)||INSTRUMENT_FILES.find(f=>f.file===file)||AUX_FILES.find(f=>f.file===file);
+    showNoCrystal(type==='instrument'?'仪器/光学专题文档无3D晶体模型':'辅助文档');
+    const info=INSTRUMENT_FILES.find(f=>f.file===file)||AUX_FILES.find(f=>f.file===file);
     document.getElementById('header-meta').textContent=info?info.name:'';
   }
 }
@@ -1002,113 +958,57 @@ function buildCrystalFromCIF(cif,supercellN){
   apply3DTheme();
 }
 
-// ==================== Unified crystal view (cell/habit toggle) ====================
-let curGem=null, curCif=null, curHabit=null;
-let _twinOn=false;
-let _scN=[1,1,1]; // supercell size for cell mode
-
-function displayCrystal(cif,gem){
-  curCif=cif;curGem=gem;curHabit=HABIT_DATA[gem.struct]||null;
-  _twinOn=!!(curHabit&&curHabit.defaultTwin);_scN=[1,1,1];
+// ---- display crystal from CIF ----
+function showCrystalFromCIF(cif,gem){
   const panel=document.getElementById('crystal-panel');
   panel.classList.remove('collapsed');
-  document.getElementById('three-canvas').style.display='block';
+  const canvas=document.getElementById('three-canvas');
+  canvas.style.display='block';
   document.getElementById('viewer-hint').style.display='block';
   if(!scene)initThree();
+  // After panel expands, resize renderer to new dimensions
   requestAnimationFrame(()=>onResize());
-  // 默认显示晶形（原矿晶体形态），若无晶形数据则回退到晶胞
-  if(curHabit)switchView('habit');
-  else switchView('cell');
-}
 
-function switchView(mode){
-  viewMode=mode;
-  clearCrystal();
-  buildControls();
-  if(mode==='cell'&&curCif){
-    buildCrystalFromCIF(curCif,_scN);
-    updateInfoForCell(curGem,curCif);
-  }else if(mode==='habit'&&curHabit){
-    buildHabitMesh(curHabit,_twinOn);
-    updateInfoForHabit(curGem,curHabit);
-  }
-}
-
-function buildControls(){
+  // build controls
   const vc=document.getElementById('viewer-controls');
   vc.innerHTML='';
-  const mkSep=()=>{const s=document.createElement('span');s.className='vc-sep';return s;};
-  const mkBtn=(label,active,cb)=>{
+  const addBtn=(label,active,onclick)=>{
     const b=document.createElement('button');
     b.className='vc-btn'+(active?' active':'');b.textContent=label;
-    if(cb)b.onclick=cb;
-    return b;
+    b.onclick=()=>{onclick();b.classList.toggle('active');buildCrystalFromCIF(cif);};
+    vc.appendChild(b);
   };
+  addBtn('原子',showAtoms,()=>{showAtoms=!showAtoms;});
+  addBtn('化学键',showBonds,()=>{showBonds=!showBonds;});
+  addBtn('晶胞框',showCell,()=>{showCell=!showCell;});
+  // polyhedra button disabled for CIF mode (would require coordination analysis)
+  const sep=document.createElement('span');sep.className='vc-sep';vc.appendChild(sep);
+  const rot=document.createElement('button');
+  rot.className='vc-btn'+(autoRotate?' active':'');rot.textContent='自动旋转';
+  rot.onclick=()=>{autoRotate=!autoRotate;controls.autoRotate=autoRotate;rot.classList.toggle('active');};
+  vc.appendChild(rot);
+  const reset=document.createElement('button');
+  reset.className='vc-btn';reset.textContent='重置视角';
+  reset.onclick=()=>{buildCrystalFromCIF(cif);};
+  vc.appendChild(reset);
+  // supercell toggle
+  const sc1=document.createElement('button');
+  sc1.className='vc-btn active';sc1.textContent='1×1×1';
+  const sc2=document.createElement('button');sc2.className='vc-btn';sc2.textContent='2×2×2';
+  let curSC=[1,1,1];
+  sc1.onclick=()=>{curSC=[1,1,1];sc1.classList.add('active');sc2.classList.remove('active');buildCrystalFromCIF(cif,curSC);};
+  sc2.onclick=()=>{curSC=[2,2,2];sc2.classList.add('active');sc1.classList.remove('active');buildCrystalFromCIF(cif,curSC);};
+  vc.appendChild(sc1);vc.appendChild(sc2);
 
-  // ---- Always present: 晶胞 / 晶形 toggle ----
-  const hasHabit=!!curHabit;
-  vc.appendChild(mkBtn('晶胞',viewMode==='cell',()=>switchView('cell')));
-  const hBtn=mkBtn('晶形',viewMode==='habit',()=>switchView('habit'));
-  if(!hasHabit){hBtn.classList.add('disabled');hBtn.title='该品种晶形数据待补充';hBtn.onclick=null;}
-  vc.appendChild(hBtn);
-  vc.appendChild(mkSep());
+  buildCrystalFromCIF(cif,[1,1,1]);
 
-  if(viewMode==='cell'){
-    // Cell-specific controls - state persists across switches
-    vc.appendChild(mkBtn('原子',showAtoms,()=>{showAtoms=!showAtoms;buildControls();buildCrystalFromCIF(curCif,_scN);}));
-    vc.appendChild(mkBtn('化学键',showBonds,()=>{showBonds=!showBonds;buildControls();buildCrystalFromCIF(curCif,_scN);}));
-    vc.appendChild(mkBtn('晶胞框',showCell,()=>{showCell=!showCell;buildControls();buildCrystalFromCIF(curCif,_scN);}));
-    vc.appendChild(mkSep());
-    vc.appendChild(mkBtn('自动旋转',autoRotate,()=>{autoRotate=!autoRotate;controls.autoRotate=autoRotate;}));
-    vc.appendChild(mkBtn('重置视角',false,()=>buildCrystalFromCIF(curCif,_scN)));
-    const sc1=mkBtn('1×1×1',_scN[0]===1,()=>{_scN=[1,1,1];buildControls();buildCrystalFromCIF(curCif,_scN);});
-    const sc2=mkBtn('2×2×2',_scN[0]===2,()=>{_scN=[2,2,2];buildControls();buildCrystalFromCIF(curCif,_scN);});
-    vc.appendChild(sc1);vc.appendChild(sc2);
-  }else{
-    // Habit-specific controls
-    vc.appendChild(mkBtn('自动旋转',autoRotate,()=>{autoRotate=!autoRotate;controls.autoRotate=autoRotate;}));
-    vc.appendChild(mkBtn('重置视角',false,()=>buildHabitMesh(curHabit,_twinOn)));
-    if(curHabit&&curHabit.twinBuild){
-      vc.appendChild(mkSep());
-      vc.appendChild(mkBtn('双晶',_twinOn,()=>{_twinOn=!_twinOn;buildControls();buildHabitMesh(curHabit,_twinOn);}));
-    }
-  }
-
-  controls.autoRotate=autoRotate;
-}
-
-function updateInfoForHabit(gem,habit){
-  const info=document.getElementById('crystal-info');
-  let h=`<div class="ci-title">${gem.name} — 原矿晶形</div>`;
-  h+=`<div class="ci-formula">${habit.name}</div>`;
-  h+=`<div class="ci-system" style="margin-bottom:8px">${habit.description}</div>`;
-  h+=`<div style="font-size:11px;color:var(--text-dim);margin-bottom:4px">典型单形</div>`;
-  h+=`<div style="margin-bottom:8px">`;
-  habit.forms.forEach(f=>{
-    h+=`<span style="display:inline-block;padding:2px 8px;margin:2px;border-radius:4px;background:var(--bg3);border:1px solid var(--border);font-size:11px;color:var(--text)">${f}</span>`;
-  });
-  h+=`</div>`;
-  const gp=GEM_PROPS[gem.struct]||{};
-  if(Object.keys(gp).length){
-    h+=`<div class="ci-props">`;
-    for(const[k,v]of Object.entries(gp)){
-      h+=`<div class="prop"><span class="prop-k">${k}</span><span class="prop-v">${v}</span></div>`;
-    }
-    h+=`</div>`;
-  }
-  if(gem.color){
-    h+=`<div style="margin-top:10px;font-size:11px;color:var(--text-dim);margin-bottom:4px">代表色</div>`;
-    h+=`<div class="ci-colors"><div class="ci-color-swatch" style="background:${gem.color}"></div></div>`;
-  }
-  info.innerHTML=h;
-}
-
-function updateInfoForCell(gem,cif){
+  // info panel
   const info=document.getElementById('crystal-info');
   let h=`<div class="ci-title">${gem.name}</div>`;
   h+=`<div class="ci-formula">${cif.formula||''}</div>`;
   h+=`<div class="ci-system">${cif.sg_orig||cif.sg}<br><small>a=${cif.a.toFixed(3)}, b=${cif.b.toFixed(3)}, c=${cif.c.toFixed(3)} Å<br>α=${cif.alpha}°, β=${cif.beta}°, γ=${cif.gamma}° · Z=${cif.Z}</small></div>`;
   h+=`<div class="ci-props">`;
+  // Get gemological properties from the gem metadata
   const gp=GEM_PROPS[gem.struct]||{};
   for(const[k,v]of Object.entries(gp)){
     h+=`<div class="prop"><span class="prop-k">${k}</span><span class="prop-v">${v}</span></div>`;
@@ -1154,839 +1054,6 @@ const GEM_PROPS={
   calcite:{'莫氏硬度':'3','密度':'2.71 g/cm³','折射率':'ω=1.658, ε=1.486','双折射率':'0.172（极高，一轴负晶）','色散':'极弱','解理':'{10-11}完全（三组菱面体）','光泽':'玻璃光泽'},
 };
 
-// ==================== 原矿晶形（Crystal Habit）3D数据 ====================
-// 使用直接顶点+面索引定义典型晶形（预定义ConvexGeometry）
-// 面格式：[v0,v1,v2,...] 顶点索引（逆时针朝外）
-
-// 通用多面体构建：传入vertices([Vector3]), faces([[idx0,idx1,idx2,...]]), color
-function buildPolyhedronGeometry(vertices, faces){
-  const pos=[],nrm=[];
-  const centroid=new THREE.Vector3();
-  vertices.forEach(v=>centroid.add(v));
-  centroid.multiplyScalar(1/vertices.length);
-  faces.forEach(face=>{
-    // triangulate convex polygon (fan from vertex 0)
-    for(let i=1;i<face.length-1;i++){
-      const a=vertices[face[0]],b=vertices[face[i]],c=vertices[face[i+1]];
-      const u=new THREE.Vector3().subVectors(b,a), v=new THREE.Vector3().subVectors(c,a);
-      const n=new THREE.Vector3().crossVectors(u,v);
-      const faceCenter=new THREE.Vector3().add(a).add(b).add(c).multiplyScalar(1/3);
-      const outward=new THREE.Vector3().subVectors(faceCenter,centroid);
-      if(n.dot(outward)<0)n.negate();
-      n.normalize();
-      [a,b,c].forEach(vx=>{pos.push(vx.x,vx.y,vx.z);nrm.push(n.x,n.y,n.z);});
-    }
-  });
-  const g=new THREE.BufferGeometry();
-  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
-  g.setAttribute('normal',new THREE.Float32BufferAttribute(nrm,3));
-  return g;
-}
-
-// ---- 基础单形生成函数（所有顶点坐标和面索引经检验）----
-
-function makeOctahedron(s){ // {111}八面体
-  return {
-    vertices:[
-      new THREE.Vector3(s,0,0),new THREE.Vector3(-s,0,0),
-      new THREE.Vector3(0,s,0),new THREE.Vector3(0,-s,0),
-      new THREE.Vector3(0,0,s),new THREE.Vector3(0,0,-s),
-    ],
-    faces:[[0,2,4],[0,4,3],[0,3,5],[0,5,2],[1,4,2],[1,3,4],[1,5,3],[1,2,5]],
-  };
-}
-
-function makeCube(s){ // {100}立方体
-  return {
-    vertices:[
-      new THREE.Vector3(s,s,s),new THREE.Vector3(-s,s,s),new THREE.Vector3(-s,-s,s),new THREE.Vector3(s,-s,s),
-      new THREE.Vector3(s,s,-s),new THREE.Vector3(-s,s,-s),new THREE.Vector3(-s,-s,-s),new THREE.Vector3(s,-s,-s),
-    ],
-    faces:[[0,3,2,1],[4,5,6,7],[1,2,6,5],[0,4,7,3],[0,1,5,4],[2,3,7,6]],
-  };
-}
-
-function makeRhombDod(s){ // {110}菱形十二面体（石榴石）
-  // 14顶点: 6个轴顶点(±s,0,0)等 + 8个三分顶点(±s/2,±s/2,±s/2)
-  const a=s/2;
-  return {
-    vertices:[
-      new THREE.Vector3(s,0,0),new THREE.Vector3(-s,0,0),
-      new THREE.Vector3(0,s,0),new THREE.Vector3(0,-s,0),
-      new THREE.Vector3(0,0,s),new THREE.Vector3(0,0,-s),
-      new THREE.Vector3(a,a,a),new THREE.Vector3(-a,a,a),
-      new THREE.Vector3(-a,-a,a),new THREE.Vector3(a,-a,a),
-      new THREE.Vector3(a,a,-a),new THREE.Vector3(-a,a,-a),
-      new THREE.Vector3(-a,-a,-a),new THREE.Vector3(a,-a,-a),
-    ],
-    faces:[
-      [0,6,2,10],[2,7,1,11],[1,8,3,12],[3,9,0,13],
-      [0,9,4,6],[1,7,4,8],[1,12,5,7],[0,10,5,13],
-      [2,6,4,7],[3,8,4,9],[3,13,5,12],[2,11,5,10],
-    ],
-  };
-}
-
-// 六方柱（r=半径，h=半高）
-function makeHexPrism(r,h){
-  const v=[];
-  for(let i=0;i<6;i++){
-    const a=i*Math.PI/3;
-    v.push(new THREE.Vector3(r*Math.cos(a),r*Math.sin(a),h));   // top: 0,2,4,6,8,10
-    v.push(new THREE.Vector3(r*Math.cos(a),r*Math.sin(a),-h));  // bot: 1,3,5,7,9,11
-  }
-  const faces=[];
-  // top face: CCW from above = 0→2→4→6→8→10
-  faces.push([0,2,4,6,8,10]);
-  // bottom face: CCW from below = 1→11→9→7→5→3
-  faces.push([1,11,9,7,5,3]);
-  // 6 side faces
-  for(let i=0;i<6;i++){
-    const t0=i*2,t2=((i+1)%6)*2;
-    faces.push([t0,t0+1,t2+1,t2]);
-  }
-  return {vertices:v,faces};
-}
-
-// 六方柱+双锥终端（石英/绿柱石型）
-function makeHexPrismWithPyramids(pr,ph,tr,tipH){
-  // pr=柱半径, ph=柱半高, tr=锥底半径, tipH=锥高
-  const v=[];
-  for(let i=0;i<6;i++){
-    const a=i*Math.PI/3;
-    v.push(new THREE.Vector3(pr*Math.cos(a),pr*Math.sin(a),ph));
-    v.push(new THREE.Vector3(pr*Math.cos(a),pr*Math.sin(a),-ph));
-  }
-  const topA=new THREE.Vector3(0,0,ph+tipH);
-  const botA=new THREE.Vector3(0,0,-ph-tipH);
-  v.push(topA,botA);
-  const tAi=12,bAi=13;
-  const faces=[];
-  // top pyramid
-  for(let i=0;i<6;i++){
-    const t0=i*2,t2=((i+1)%6)*2;
-    faces.push([t0,t2,tAi]);
-  }
-  // bottom pyramid
-  for(let i=0;i<6;i++){
-    const b0=i*2+1,b2=((i+1)%6)*2+1;
-    faces.push([b2,b0,bAi]);
-  }
-  // side prism
-  for(let i=0;i<6;i++){
-    const t0=i*2,t2=((i+1)%6)*2;
-    faces.push([t0,t0+1,t2+1,t2]);
-  }
-  return {vertices:v,faces};
-}
-
-// 桶状/腰鼓状（刚玉）——简化为鼓胀六方双锥
-function makeBarrelHex(r,h,bulge){
-  // 3 rings: bottom, mid(wider), top
-  const v=[];
-  const n=6;
-  // bottom ring at z=-h
-  for(let i=0;i<n;i++){
-    const a=i*Math.PI/3;
-    v.push(new THREE.Vector3(r*Math.cos(a),r*Math.sin(a),-h));
-  }
-  // middle ring at z=0 (slightly wider)
-  const mr=r*(1+bulge);
-  for(let i=0;i<n;i++){
-    const a=i*Math.PI/3;
-    v.push(new THREE.Vector3(mr*Math.cos(a),mr*Math.sin(a),0));
-  }
-  // top ring at z=h
-  for(let i=0;i<n;i++){
-    const a=i*Math.PI/3;
-    v.push(new THREE.Vector3(r*Math.cos(a),r*Math.sin(a),h));
-  }
-  // top and bottom apices (flat)
-  const top=new THREE.Vector3(0,0,h*1.15);
-  const bot=new THREE.Vector3(0,0,-h*1.15);
-  v.push(top,bot);
-  const tAi=18,bAi=19;
-  const faces=[];
-  // bottom cap: bot→bottom ring
-  for(let i=0;i<n;i++){
-    faces.push([i,(i+1)%n,bAi]);
-  }
-  // bottom-to-mid
-  for(let i=0;i<n;i++){
-    const j=(i+1)%n;
-    faces.push([i,j,j+6,i+6]);
-  }
-  // mid-to-top
-  for(let i=0;i<n;i++){
-    const j=(i+1)%n;
-    faces.push([i+6,j+6,j+12,i+12]);
-  }
-  // top cap
-  for(let i=0;i<n;i++){
-    const j=(i+1)%n;
-    faces.push([i+12,j+12,tAi]);
-  }
-  return {vertices:v,faces};
-}
-
-// 三方柱（电气石）——用带3个主面+3个小面的9边形模拟球面三角形
-function makeTrigonalPrism(r,h){
-  const v=[];
-  const n=9;
-  for(let i=0;i<n;i++){
-    let a=i*2*Math.PI/n - Math.PI/2;
-    let rr=r;
-    if(i%3!==0)rr=r*0.82; // minor faces recessed
-    v.push(new THREE.Vector3(rr*Math.cos(a),rr*Math.sin(a),h));
-    v.push(new THREE.Vector3(rr*Math.cos(a),rr*Math.sin(a),-h));
-  }
-  const topA=new THREE.Vector3(0,0,h+r*0.3);
-  const botA=new THREE.Vector3(0,0,-h-r*0.3);
-  v.push(topA,botA);
-  const tAi=n*2,bAi=n*2+1;
-  const faces=[];
-  for(let i=0;i<n;i++){
-    const j=(i+1)%n;
-    faces.push([i*2,j*2,tAi]);
-    faces.push([j*2+1,i*2+1,bAi]);
-    faces.push([i*2,i*2+1,j*2+1,j*2]);
-  }
-  return {vertices:v,faces};
-}
-
-// 菱面体（方解石型）——简单斜立方体
-function makeRhombohedron(s){
-  const sh=0.45; // shear factor
-  const v=[];
-  [[0,0,0],[1,0,0],[0,1,0],[0,0,1],[1,1,0],[1,0,1],[0,1,1],[1,1,1]].forEach(p=>{
-    const x=p[0]-0.5,y=p[1]-0.5,z=p[2]-0.5;
-    v.push(new THREE.Vector3(s*(x+sh*z),s*(y+sh*z),s*z*1.2));
-  });
-  const faces=[
-    [0,2,6,5],[0,5,4,1],[0,1,3,2],
-    [7,4,5,6],[7,6,2,3],[7,3,1,4],
-  ];
-  return {vertices:v,faces};
-}
-
-// 四方柱+双锥（锆石）
-function makeTetragonalPrism(a,c){
-  // 8 ring vertices: top(0-3) z=+c, bot(4-7) z=-c (CCW from +z)
-  const v=[
-    new THREE.Vector3(a,a,c),new THREE.Vector3(-a,a,c),new THREE.Vector3(-a,-a,c),new THREE.Vector3(a,-a,c),
-    new THREE.Vector3(a,a,-c),new THREE.Vector3(-a,a,-c),new THREE.Vector3(-a,-a,-c),new THREE.Vector3(a,-a,-c),
-  ];
-  const tA=new THREE.Vector3(0,0,c+a*0.9);
-  const bA=new THREE.Vector3(0,0,-c-a*0.9);
-  v.push(tA,bA);
-  const ti=8,bi=9;
-  return {
-    vertices:v,
-    faces:[
-      // top pyramid (CCW from +z)
-      [0,1,ti],[1,2,ti],[2,3,ti],[3,0,ti],
-      // bottom pyramid (CCW from -z: apex goes in middle for correct winding)
-      [4,bi,5],[5,bi,6],[6,bi,7],[7,bi,4],
-      // side prism quads (CCW from outside)
-      [0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0],
-    ],
-  };
-}
-
-// 斜方柱（托帕石/辉石/长石）——长方体+凿形终端
-// 坐标系：z 轴为柱长方向（c轴），+z 端为凿形终端，-z 端为平底端
-function makeOrthorhombicPrism(a,b,c,chisel){
-  // 8 base vertices: 0-3 at z=-c(bottom), 4-7 at z=+c(top prism)
-  // CCW order from +z: right-front→left-front→left-back→right-back
-  const v=[
-    new THREE.Vector3(a,b,-c),new THREE.Vector3(-a,b,-c),
-    new THREE.Vector3(-a,-b,-c),new THREE.Vector3(a,-b,-c),
-    new THREE.Vector3(a,b,c),new THREE.Vector3(-a,b,c),
-    new THREE.Vector3(-a,-b,c),new THREE.Vector3(a,-b,c),
-  ];
-  if(!chisel){
-    return {vertices:v,faces:[
-      [0,3,2,1],        // bottom (z=-c), CCW from -z
-      [4,5,6,7],        // top (z=+c), CCW from +z
-      [0,1,5,4],        // front (+y)
-      [1,2,6,5],        // left (-x)
-      [2,3,7,6],        // back (-y)
-      [3,0,4,7],        // right (+x)
-    ]};
-  }
-  // Chisel (wedge) termination at +z end: ridge runs along x-axis (left-right) like a chisel blade
-  // Two sloping roof faces (front+back) meet at the ridge; two triangular cheeks close the sides
-  const ridgeH=a*0.7;
-  const r1=new THREE.Vector3( a*0.85, 0, c+ridgeH);  // right end of ridge
-  const r2=new THREE.Vector3(-a*0.85, 0, c+ridgeH);  // left end of ridge
-  v.push(r1,r2);
-  const R1=8,R2=9;
-  return {
-    vertices:v,
-    faces:[
-      [0,3,2,1],        // bottom (z=-c)
-      [0,1,5,4],        // front (+y) wall — full rectangle up to z=+c
-      [2,3,7,6],        // back (-y) wall
-      [0,3,7,4],        // right (+x) wall
-      [1,2,6,5],        // left (-x) wall
-      // Chisel roof (2 sloping quads + 2 closing triangles):
-      [4,5,R2,R1],      // front slope (y=+b up to ridge)
-      [6,7,R1,R2],      // back slope (y=-b up to ridge)
-      [4,R1,7],         // right cheek triangle
-      [5,6,R2],         // left cheek triangle
-    ],
-  };
-}
-
-// 尖晶石律接触双晶：两个八面体以{111}面为接合面（反射双晶）
-// 平面 x+y+z=s 穿过顶点 (s,0,0),(0,s,0),(0,0,s) 作为共享三角形面
-function makeSpinelTwin(s){
-  // 第一颗八面体顶点：0(+x),1(-x),2(+y),3(-y),4(+z),5(-z)
-  const v=[
-    new THREE.Vector3(s,0,0),new THREE.Vector3(-s,0,0),
-    new THREE.Vector3(0,s,0),new THREE.Vector3(0,-s,0),
-    new THREE.Vector3(0,0,s),new THREE.Vector3(0,0,-s),
-  ];
-  // 反射 across plane x+y+z=s: p' = p - 2*(p·n - d)/|n|² · n
-  // n=(1,1,1), d=s, |n|²=3
-  function reflect(px,py,pz){
-    const diff=px+py+pz-s;
-    const k=2*diff/3;
-    return new THREE.Vector3(px-k,py-k,pz-k);
-  }
-  // 对面三颗顶点(-x,-y,-z)反射形成另一半双晶
-  v.push(reflect(-s,0,0));  // 6
-  v.push(reflect(0,-s,0));  // 7
-  v.push(reflect(0,0,-s));  // 8
-  // 八面体8面（全部三角面），去掉共享面 [0,2,4]（内部面）
-  // 第一半：除共享面外的7个面
-  const faces1=[
-    [0,4,3],[0,3,5],[0,5,2],       // +x端周围3面（共享面已移除）
-    [1,4,2],[1,2,5],[1,5,3],[1,3,4], // -x端4面（顶点1保留在第一半）
-  ];
-  // 第二半：映射 0→0, 2→2, 4→4, 1→6, 3→7, 5→8；同样去掉共享面[0,2,4]
-  const map=[0,6,2,7,4,8];
-  const octFaces=[
-    [0,2,4],[0,4,3],[0,3,5],[0,5,2],
-    [1,4,2],[1,2,5],[1,5,3],[1,3,4],
-  ];
-  const faces2=octFaces
-    .filter(f=>!(f.includes(0)&&f.includes(2)&&f.includes(4)))
-    .map(f=>f.map(i=>map[i]));
-  return {vertices:v,faces:[...faces1,...faces2]};
-}
-
-// ---- 板状/片状（金绿宝石/葡萄石型）——斜方晶系，{001}板面发育，呈板状/片状
-function makeTabularOrtho(a,b,c){
-  // a=x半宽, b=y半厚, c=z半长(c轴)
-  // 压扁沿y方向({010}板面)或沿z({001})，这里a>>b呈板状
-  return makeOrthorhombicPrism(a,b,c,false);
-}
-
-// ---- 蓝晶石刀片状——三斜晶系，极度扁平长板状，简化为极扁斜方柱
-function makeKyaniteBlade(len,wid,thk){
-  return makeOrthorhombicPrism(wid,thk,len,false);
-}
-
-// ---- 复三方双锥（蓝锥矿）——三角双锥，腰宽而上下锥压扁（典型蓝锥矿外形：扁平三角双锥）
-function makeDitrigonalBipyramid(r,h){
-  // 蓝锥矿为三方晶系D3h点群，典型形态是扁平的三角双锥：
-  // 6个"肩"顶点构成三角形轮廓（每边两个点），上下锥顶
-  const v=[];
-  const n=6;
-  for(let i=0;i<n;i++){
-    const a=i*Math.PI/3;
-    // 蓝锥矿三角形轮廓：三个主顶点半径r，三个次要顶点半径约0.55r（更接近三角而非六方）
-    const rr=i%2===0?r:r*0.55;
-    v.push(new THREE.Vector3(rr*Math.cos(a),rr*Math.sin(a),0));
-  }
-  const top=new THREE.Vector3(0,0,h);
-  const bot=new THREE.Vector3(0,0,-h);
-  v.push(top,bot);
-  const ti=n,bi=n+1;
-  const faces=[];
-  for(let i=0;i<n;i++){
-    const j=(i+1)%n;
-    faces.push([i,j,ti]);
-    faces.push([j,i,bi]);
-  }
-  return {vertices:v,faces};
-}
-
-// ---- 八边形横断面短柱（辉石型）——{110}柱+{100}{010}板面组合
-function makeOctagonalPrism(r,prismH,faceRatio){
-  // 辉石横断面近正方形或八边形：{110}斜方柱面发育为主，{100}{010}板面较小
-  // faceRatio控制{100}板面大小（0=纯矩形柱，1=正八边形），辉石约0.3-0.4
-  if(!faceRatio)faceRatio=0.35;
-  const v=[];
-  const a=r; // x半宽
-  const b=r; // y半宽（近正方形）
-  const c=prismH; // z半高
-  const cut=a*faceRatio; // {100}板面在对角方向的截切深度
-  // 16 vertices: 8 top + 8 bottom
-  // 45度方向截切后的顶点
-  // 主要顶点顺序（绕z轴CCW，从+x方向开始）:
-  // (a, b-cut, z) → {100}板面
-  // (a-cut, b, z) → 斜方面→{100}板面过渡
-  // (-a+cut, b, z)
-  // (-a, b-cut, z)
-  // (-a, -b+cut, z)
-  // (-a+cut, -b, z)
-  // (a-cut, -b, z)
-  // (a, -b+cut, z)
-  const top=[
-    [a,b-cut, c],[a-cut,b, c],[-a+cut,b, c],[-a,b-cut, c],
-    [-a,-b+cut, c],[-a+cut,-b, c],[a-cut,-b, c],[a,-b+cut, c],
-  ];
-  const bot=[
-    [a,b-cut,-c],[a-cut,b,-c],[-a+cut,b,-c],[-a,b-cut,-c],
-    [-a,-b+cut,-c],[-a+cut,-b,-c],[a-cut,-b,-c],[a,-b+cut,-c],
-  ];
-  top.forEach(p=>v.push(new THREE.Vector3(p[0],p[1],p[2])));
-  bot.forEach(p=>v.push(new THREE.Vector3(p[0],p[1],p[2])));
-  const faces=[];
-  // top face (CCW from above)
-  faces.push([0,1,2,3,4,5,6,7]);
-  // bottom face (CCW from below = reversed)
-  faces.push([8,15,14,13,12,11,10,9]);
-  // 8 side faces
-  for(let i=0;i<8;i++){
-    const j=(i+1)%8;
-    faces.push([i,j,j+8,i+8]);
-  }
-  return {vertices:v,faces};
-}
-
-// ---- 假六方柱状（斜方晶系但外观六方，如黝帘石/堇青石）
-function makePseudoHexPrism(r,c){
-  // 斜方晶系"假六方柱"：三个方向柱面发育近似等长，横断面呈扁六边形
-  // 用六方柱近似（y方向稍压扁以体现斜方对称）
-  const v=[];
-  const n=6;
-  const yScale=0.92; // 轻微压扁表示斜方晶系非理想六方
-  for(let i=0;i<n;i++){
-    const a=i*Math.PI/3;
-    v.push(new THREE.Vector3(r*Math.cos(a),r*Math.sin(a)*yScale, c));
-    v.push(new THREE.Vector3(r*Math.cos(a),r*Math.sin(a)*yScale,-c));
-  }
-  const faces=[];
-  faces.push([0,2,4,6,8,10]); // top
-  faces.push([1,11,9,7,5,3]); // bottom
-  for(let i=0;i<6;i++){
-    const t0=i*2,t2=((i+1)%6)*2;
-    faces.push([t0,t0+1,t2+1,t2]);
-  }
-  return {vertices:v,faces};
-}
-
-// ---- 菱面体+六方柱组合（硅铍石型，类似石英但菱面体更发育、柱更短）
-function makeRhombohedralPrism(rhombR,prismR,prismH,rhombH){
-  // 短柱状：中段六方柱，两端菱面体锥（类石英但柱短锥发育）
-  const v=[];
-  // 六方柱中段：12顶点（6 top ring, 6 bottom ring）
-  const n=6;
-  for(let i=0;i<n;i++){
-    const a=i*Math.PI/3;
-    v.push(new THREE.Vector3(prismR*Math.cos(a),prismR*Math.sin(a), prismH));
-    v.push(new THREE.Vector3(prismR*Math.cos(a),prismR*Math.sin(a),-prismH));
-  }
-  // 上下菱面体顶点（z方向偏移rhombH）
-  const top=new THREE.Vector3(0,0,prismH+rhombH);
-  const bot=new THREE.Vector3(0,0,-prismH-rhombH);
-  v.push(top,bot);
-  const ti=n*2,bi=n*2+1;
-  const faces=[];
-  // 上端菱面体面（三角扇形连接top到柱顶环）
-  for(let i=0;i<n;i++){
-    const t0=i*2,t2=((i+1)%n)*2;
-    faces.push([t0,t2,ti]);
-    faces.push([t0+1,bi,t2+1]);
-  }
-  // 6 side faces of prism
-  for(let i=0;i<n;i++){
-    const t0=i*2,t2=((i+1)%n)*2;
-    faces.push([t0,t0+1,t2+1,t2]);
-  }
-  return {vertices:v,faces};
-}
-
-// ---- 细长六方柱+小锥（磷灰石/硼铝石型）
-function makeSlenderHexPrism(r,h,pyramH){
-  if(!pyramH)pyramH=r*0.3;
-  return makeHexPrismWithPyramids(r,h,r,pyramH);
-}
-
-// ---- 金绿宝石{130}轮式三连晶——6片斜板放射聚形（六瓣花/车轮状）
-// 形态：6块完全相同的长板状扁棱柱以c轴(Z)为中心呈六次旋转对称（60°间隔）
-//       向外辐射汇聚于原点，形成假六方星簇/车轮形态。
-// 板片取向：板平面倾斜于XY平面（板平面与Z轴有固定倾角），使整体呈立体星簇而非平面图形。
-// 单板特征：径向长L > 宽度W >> 厚度T，外端斜切菱形尖角，内端汇聚原点；
-//           板面平行于径向有纵向棱纹（以边面细分表现）；硬边无倒角。
-// 每片板为独立mesh（parts数组）避免自交，三对同色对应三单晶组分（双晶两端）。
-function makeChrysoberylTwin(s){
-  const L=1.25*s;   // 径向长度（原点→外尖）
-  const W=0.38*s;   // 板宽度（垂直径向，在板平面内）
-  const T=0.10*s;   // 板厚度（垂直于板平面）
-  const a=0.40*s;   // 外端斜切长度
-  const b=0.08*s;   // 内端收窄起始半径
-  const sw=0.20;    // 内端宽度比例（内肩宽 = W*sw）
-  const tilt=25;    // 板平面倾角（度）——板平面与水平面(XY)的夹角，使立体呈星簇
-  // 单板局部坐标：
-  //   +X = 径向向外（从原点指向外尖）
-  //   +Y = 宽度方向（在板平面内，垂直径向）
-  //   +Z = 厚度方向（垂直于板平面，向上倾斜）
-  // 板平面绕Y轴倾斜tilt度，使板平面的法线向上偏转。
-  // 单板轮廓（在板平面的局部XY平面）——六边形：
-  //   外尖(L,0) → 上外肩(L-a, W/2) → 上内肩(b, W/2*sw) → 内尖(0,0) → 下内肩(b, -W/2*sw) → 下外肩(L-a, -W/2)
-  const profile=[
-    [L, 0],
-    [L-a,  W/2],
-    [b,    W/2*sw],
-    [0, 0],
-    [b,   -W/2*sw],
-    [L-a, -W/2],
-  ];
-  const np=profile.length;
-  const tiltRad=tilt*Math.PI/180;
-  const cosT=Math.cos(tiltRad), sinT=Math.sin(tiltRad);
-  // 三对同色（每对为同一单晶的两瓣，相隔180°）
-  const petalColors=[0xd4a040,0xc07030,0x5588aa,0xd4a040,0xc07030,0x5588aa];
-  const parts=[];
-  for(let k=0;k<6;k++){
-    const ang=k*60*Math.PI/180;
-    const cosA=Math.cos(ang), sinA=Math.sin(ang);
-    const verts=[];
-    const faces=[];
-    // 生成板正面(local z=+T/2)和背面(local z=-T/2)的顶点
-    // 局部坐标(lx,ly,lz) → 倾斜(绕Y轴tilt) → 绕Z轴旋转ang → 世界坐标
-    for(let side=0;side<2;side++){
-      const lz=(side===0)?T/2:-T/2;
-      for(let i=0;i<np;i++){
-        const lx=profile[i][0], ly=profile[i][1];
-        // 绕Y轴倾斜：X'=X*cosT + Z*sinT, Z'=-X*sinT + Z*cosT
-        const x1=lx*cosT + lz*sinT;
-        const z1=-lx*sinT + lz*cosT;
-        const y1=ly;
-        // 绕Z轴旋转ang
-        const wx=x1*cosA - y1*sinA;
-        const wy=x1*sinA + y1*cosA;
-        const wz=z1;
-        verts.push(new THREE.Vector3(wx,wy,wz));
-      }
-    }
-    // 正面(base+0..np-1) 从+lz侧看为CW
-    const front=[0,5,4,3,2,1];
-    const back =[6,7,8,9,10,11];
-    faces.push(front,back);
-    for(let i=0;i<np;i++){
-      const j=(i+1)%np;
-      faces.push([i,j,j+np,i+np]);
-    }
-    parts.push({vertices:verts,faces,color:petalColors[k]});
-  }
-  return {parts};
-}
-
-// ---- 堇青石{110}三连晶/六连晶——三个假六方柱以120°互成轮生，形成假六方外观
-function makeCordieriteTwin(s){
-  const v=[];
-  const faces=[];
-  // 单根柱尺寸（较细，三根交织）
-  const r=s*0.58, c=s*1.1;
-  function addPrism(ang){
-    const cos=Math.cos(ang),sin=Math.sin(ang);
-    const yScale=0.92;
-    const base=v.length;
-    const n=6;
-    // 用假六方柱顶点
-    const local=[];
-    for(let i=0;i<n;i++){
-      const a=i*Math.PI/3;
-      local.push([r*Math.cos(a),r*Math.sin(a)*yScale, c]);
-      local.push([r*Math.cos(a),r*Math.sin(a)*yScale,-c]);
-    }
-    local.forEach(p=>{
-      const x=p[0],y=p[1],z=p[2];
-      v.push(new THREE.Vector3(x*cos-y*sin,x*sin+y*cos,z));
-    });
-    // top face
-    faces.push([base+0,base+2,base+4,base+6,base+8,base+10]);
-    // bottom face
-    faces.push([base+1,base+11,base+9,base+7,base+5,base+3]);
-    for(let i=0;i<6;i++){
-      const t0=i*2,t2=((i+1)%6)*2;
-      faces.push([base+t0,base+t0+1,base+t2+1,base+t2]);
-    }
-  }
-  // 三个柱以120°轮生（堇青石{110}三连晶，形成假六方外观）
-  for(let k=0;k<3;k++){
-    addPrism(k*2*Math.PI/3);
-  }
-  return {vertices:v,faces};
-}
-
-// ==================== 晶形定义数据 ====================
-const HABIT_DATA={
-  diamond:{ // 钻石
-    name:'钻石 八面体',
-    color:0xd0e8ff,
-    build:()=>makeOctahedron(1.2),
-    description:'{111}八面体，晶面常具三角形蚀象（trigons），可见尖晶石律贯穿双晶',
-    forms:['{111}八面体','{100}立方体（次要）','{110}菱形十二面体（次要）'],
-  },
-  corundum:{ // 刚玉
-    name:'刚玉 桶状晶形',
-    color:0xd04060,
-    build:()=>makeBarrelHex(0.8,1.2,0.12),
-    description:'桶状/腰鼓状，{10-11}菱面体+{11-20}六方柱，晶面横纹，{0001}裂理',
-    forms:['{10-11}菱面体r','{11-20}六方柱a','{0001}底面c','{22-43}n'],
-  },
-  beryl:{ // 绿柱石
-    name:'绿柱石 六方柱',
-    color:0x40c080,
-    build:()=>makeHexPrism(0.7,1.8),
-    description:'{10-10}六方柱+{0001}平行双面，柱面纵纹，祖母绿短柱/海蓝宝长柱',
-    forms:['{10-10}六方柱m','{0001}平行双面c','{10-11}六方双锥p'],
-  },
-  quartz:{ // 石英
-    name:'石英 柱状晶形',
-    color:0xb090e0,
-    build:()=>makeHexPrismWithPyramids(0.7,1.3,0.7,0.9),
-    description:'{10-10}柱+正菱面体r{10-11}+负菱面体z{01-11}（r>z显三方对称），柱面横纹，道芬/巴西双晶',
-    forms:['{10-10}六方柱m','{10-11}正菱面体r','{01-11}负菱面体z'],
-  },
-  elbaite:{ // 电气石
-    name:'电气石 三方柱',
-    color:0x50b070,
-    build:()=>makeTrigonalPrism(0.75,1.6),
-    description:'{10-10}三方柱+球面三角形横断面，柱面纵纹，异极像（两端晶形不同）',
-    forms:['{10-10}三方柱','{02-21}负菱面体','{11-20}复三方柱'],
-  },
-  pyrope:{ // 石榴石
-    name:'石榴石 菱形十二面体',
-    color:0xc04050,
-    build:()=>makeRhombDod(1.2),
-    description:'{110}菱形十二面体+{211}偏方复十二面体，等轴晶系，无解理',
-    forms:['{110}菱形十二面体d','{211}偏方复十二面体'],
-  },
-  spinel:{ // 尖晶石
-    name:'尖晶石 八面体+双晶',
-    color:0xe06080,
-    build:()=>makeOctahedron(1.0),
-    description:'{111}八面体，常具尖晶石律接触双晶（特征平三角面）',
-    forms:['{111}八面体','尖晶石律接触双晶'],
-    twinBuild:()=>makeSpinelTwin(1.0),
-  },
-  fluorite:{ // 萤石
-    name:'萤石 立方体',
-    color:0x80e0ff,
-    build:()=>makeCube(1.0),
-    description:'{100}立方体，晶面阶梯状生长纹，{111}四组完全解理，穿插双晶',
-    forms:['{100}立方体','{111}八面体（次要）','{111}四组完全解理'],
-  },
-  calcite:{ // 方解石
-    name:'方解石 菱面体',
-    color:0xe8e0f0,
-    build:()=>makeRhombohedron(1.2),
-    description:'{10-11}菱面体（三组75°解理），偏三角面体犬牙状，蝴蝶双晶{01-12}',
-    forms:['{10-11}菱面体r','{21-31}偏三角面体','{01-12}蝴蝶双晶'],
-  },
-  zircon:{ // 锆石
-    name:'锆石 四方柱+双锥',
-    color:0xd0a060,
-    build:()=>makeTetragonalPrism(0.6,1.2),
-    description:'{100}{110}四方柱+{111}四方双锥，高型锆石晶形完好，强色散0.038',
-    forms:['{100}四方柱a','{110}四方柱m','{111}四方双锥p'],
-  },
-  topaz:{ // 托帕石
-    name:'托帕石 斜方柱',
-    color:0xf0d040,
-    build:()=>makeOrthorhombicPrism(0.55,0.7,1.5,true),
-    description:'斜方柱状，{001}一组完全解理（垂直c轴），菱形横断面，凿形终端',
-    forms:['{110}斜方柱','{001}完全解理','{021}斜方柱','{111}双锥'],
-  },
-  diopside:{ // 辉石（含硬玉）
-    name:'辉石 短柱状',
-    color:0x70a080,
-    build:()=>makeOctagonalPrism(0.75,1.4,0.35),
-    description:'短柱状，{110}两组完全解理夹角87°（辉石式解理），横断面近正方形/八边形（{110}柱+{100}{010}板面组合）',
-    forms:['{110}斜方柱','{100}{010}板面','{110}解理87°'],
-  },
-  microcline:{ // 长石
-    name:'长石 板柱状',
-    color:0xe8d8c0,
-    build:()=>makeOrthorhombicPrism(0.35,0.85,1.2,false),
-    description:'板状/短柱状，卡斯巴双晶（钾长石）/钠长石聚片双晶（斜长石），{001}{010}两组解理90°正交',
-    forms:['{010}板面','{001}c','{110}斜方柱','卡斯巴双晶/聚片双晶'],
-  },
-  chrysoberyl:{ // 金绿宝石
-    name:'金绿宝石 {130}轮式三连晶',
-    color:0xc8b870,
-    build:()=>makeTabularOrtho(0.9,0.28,0.7),
-    description:'{001}板状/短柱状单晶，晶面常有V形条纹；自然界最常见为{130}轮式三连晶（六瓣花/车轮状，假六方外观），是金绿宝石标志性鉴定特征',
-    forms:['{010}板面b','{110}斜方柱','{011}斜方双锥','{130}六瓣轮式三连晶（典型形态）'],
-    twinBuild:()=>makeChrysoberylTwin(1.0),
-    defaultTwin:true,
-  },
-  forsterite:{ // 橄榄石
-    name:'橄榄石 短柱状',
-    color:0x90c040,
-    build:()=>makeOrthorhombicPrism(0.55,0.5,1.0,true),
-    description:'斜方晶系短柱状/厚板状，晶顶呈楔形（chisel termination），{010}中等解理，高双折射0.036（刻面棱重影明显），完整晶形少见，多为粒状',
-    forms:['{110}斜方柱','{010}板面b','{021}楔形终端','{010}解理'],
-  },
-  fluorapatite:{ // 磷灰石
-    name:'磷灰石 六方柱',
-    color:0x70c090,
-    build:()=>makeSlenderHexPrism(0.75,1.5,0.45),
-    description:'六方晶系，{10-10}六方柱+{10-11}六方双锥终端，常呈长短不一柱状，底面解理不完全',
-    forms:['{10-10}六方柱m','{10-11}六方双锥x','{0001}底面c'],
-  },
-  benitoite:{ // 蓝锥矿
-    name:'蓝锥矿 复三方双锥',
-    color:0x6090e0,
-    build:()=>makeDitrigonalBipyramid(1.2,0.65),
-    description:'三方晶系（-6m2点群），典型扁平三角双锥（腰宽、上下棱压缩），三角形横断面，强色散0.044（与钻石相当），一轴正晶双折射0.047，无理解，双晶极罕见',
-    forms:['{10-11}复三方双锥','{0001}底面（极少见）','{10-10}柱面（次要）'],
-  },
-  zoisite:{ // 黝帘石（坦桑石）
-    name:'黝帘石 柱状晶形',
-    color:0x6070c0,
-    build:()=>makePseudoHexPrism(0.6,1.6),
-    description:'斜方晶系长柱状/板柱状，横断面近六边形（假六方外形），柱面纵纹（平行c轴），{100}完全解理，强三色性（热处理坦桑石显蓝/紫/黄绿三色）',
-    forms:['{100}板面a','{110}斜方柱m','假六方横断面','强三色性（蓝/紫红/黄绿）'],
-  },
-  cordierite:{ // 堇青石
-    name:'堇青石 假六方柱/三连晶',
-    color:0x7080a0,
-    build:()=>makePseudoHexPrism(0.7,1.15),
-    description:'斜方晶系（高温β相六方），单晶呈假六方短柱状；常见{110}三连晶/六连晶贯穿双晶呈轮状，强三色性（"二色石"/dichroite/水蓝宝石），折射率与石英相近（1.54）',
-    forms:['{110}斜方柱','假六方柱状外形','{110}三连晶/六连晶','强三色性'],
-    twinBuild:()=>makeCordieriteTwin(1.0),
-  },
-  kyanite:{ // 蓝晶石
-    name:'蓝晶石 刀片状',
-    color:0x6090c0,
-    build:()=>makeKyaniteBlade(1.8,0.55,0.15),
-    description:'三斜晶系，特征性长刀片/板条状晶体，硬度异向性（∥c4-5，⊥c6-7），{100}完全解理，{010}良好解理',
-    forms:['{100}刀片面','{010}板面','{001}c','硬度异向性'],
-  },
-  phenakite:{ // 硅铍石
-    name:'硅铍石 菱面体短柱',
-    color:0xe0d8c0,
-    build:()=>makeRhombohedralPrism(1.0,0.7,0.7,0.8),
-    description:'三方晶系，菱面体+柱面聚形呈短柱状（类水晶外观，希腊语意为"欺骗者"因易与石英混淆），无{10-11}完全解理，一轴正晶，玻璃至亚金刚光泽',
-    forms:['{10-11}菱面体r','{11-20}六方柱m','{02-21}菱面体'],
-  },
-  danburite:{ // 赛黄晶
-    name:'赛黄晶 斜方柱',
-    color:0xf0e0b0,
-    build:()=>makeOrthorhombicPrism(0.5,0.6,1.5,true),
-    description:'斜方晶系柱状（类似黄玉但{001}解理极不完全），菱形横断面，顶端楔形/凿形外观，晶面具纵纹，色散0.017强于托帕石，常与托帕石/石英共生',
-    forms:['{110}斜方柱m','{021}斜方双锥o（楔形终端）','{001}解理极不完全'],
-  },
-  meionite:{ // 方柱石
-    name:'方柱石 四方柱',
-    color:0xc8b890,
-    build:()=>makeTetragonalPrism(0.7,1.5),
-    description:'四方晶系柱状（类似锆石但双折射中等），{100}{110}四方柱+{111}双锥，柱面纵纹',
-    forms:['{100}四方柱a','{110}四方柱m','{111}四方双锥p'],
-  },
-  jeremejevite:{ // 硼铝石
-    name:'硼铝石 六方长柱',
-    color:0x90c8e0,
-    build:()=>makeSlenderHexPrism(0.5,1.6,0.65),
-    description:'六方晶系细长柱状，尖端六方双锥发育非常完整（锥面显著），一轴负晶（可异常二轴），稀有宝石，典型无色/淡蓝色',
-    forms:['{10-10}六方柱m','{10-11}发育六方双锥','{0001}底面c'],
-  },
-  prehnite:{ // 葡萄石
-    name:'葡萄石 板状',
-    color:0xb0d880,
-    build:()=>makeTabularOrtho(0.9,0.22,0.65),
-    description:'斜方晶系板状/片状单晶（集合体肾状/葡萄状），{001}完全解理，二轴晶，"葡萄石"一名来自集合体形态',
-    forms:['{001}板面c','{110}斜方柱','集合体：肾状/葡萄状/钟乳状'],
-  },
-  rhodochrosite:{ // 菱锰矿
-    name:'菱锰矿 菱面体',
-    color:0xe07090,
-    build:()=>makeRhombohedron(1.1),
-    description:'三方晶系菱面体（类方解石），{10-11}三组完全解理（菱面体解理夹角73°），强双折射0.22，钟乳状/同心环带集合体常见',
-    forms:['{10-11}菱面体r','{10-11}三组完全解理','集合体：同心环带/钟乳状'],
-  },
-};
-
-// ==================== 晶形渲染管线 ====================
-let viewMode='cell'; // 'cell' | 'habit'
-let habitMesh=null;
-let habitEdges=null;
-let habitLabels=null;
-
-function buildHabitMesh(habitData,twin){
-  clearCrystal();
-  const shape = twin && habitData.twinBuild ? habitData.twinBuild() : habitData.build();
-  const theme=document.documentElement.getAttribute('data-theme')||'dark';
-  const isDark=theme==='dark';
-
-  // 支持parts数组（多部件，用于穿插双晶等自交形状）
-  let parts;
-  if(shape.parts){
-    parts=shape.parts;
-  }else if(shape.geometry){
-    parts=[{geometry:shape.geometry,color:habitData.color}];
-  }else{
-    parts=[{vertices:shape.vertices,faces:shape.faces,color:habitData.color}];
-  }
-
-  // 收集所有mesh用于统一计算bbox和视角
-  const meshes=[];
-  parts.forEach(part=>{
-    let g;
-    if(part.geometry){
-      g=part.geometry;
-    }else{
-      g=buildPolyhedronGeometry(part.vertices,part.faces);
-    }
-    const partColor=part.color!==undefined?part.color:habitData.color;
-    const bodyMat=new THREE.MeshPhongMaterial({
-      color:partColor,
-      transparent:shape.parts?true:(!shape.geometry),
-      opacity:shape.parts?0.85:(shape.geometry?1:(isDark?0.75:0.68)),
-      side:THREE.DoubleSide,
-      shininess:60,
-      specular:0x333333,
-      flatShading:true,
-    });
-    const m=new THREE.Mesh(g,bodyMat);
-    crystalGroup.add(m);
-    meshes.push(m);
-
-    const edgeGeom=new THREE.EdgesGeometry(g,1);
-    const edgeMat=new THREE.LineBasicMaterial({color:isDark?0xffffff:0x222222,opacity:0.9,transparent:true});
-    const edges=new THREE.LineSegments(edgeGeom,edgeMat);
-    crystalGroup.add(edges);
-    if(!habitEdges)habitEdges=edges; // 仅保留第一个的引用
-  });
-  habitMesh=meshes[0];
-
-  // 合并bbox
-  const fullBox=new THREE.Box3();
-  meshes.forEach(m=>{
-    m.geometry.computeBoundingBox();
-    const b=m.geometry.boundingBox.clone().applyMatrix4(m.matrixWorld);
-    // 因为mesh尚未加到场景（matrixWorld=identity），直接用local bbox
-    fullBox.union(m.geometry.boundingBox);
-  });
-  const center=new THREE.Vector3();
-  fullBox.getCenter(center);
-  const size=new THREE.Vector3();
-  fullBox.getSize(size);
-  const maxDim=Math.max(size.x,size.y,size.z);
-  const dist=maxDim*2.4;
-  controls.target.copy(center);
-  camera.position.copy(center).add(new THREE.Vector3(dist*0.55,dist*0.45,dist*0.85));
-  controls.update();
-}
-
 function clearCrystal(){
   while(crystalGroup.children.length){
     const c=crystalGroup.children[0];
@@ -2001,7 +1068,6 @@ function clearCrystal(){
   _tracked.bondMats.length=0;
   _tracked.cellMats.length=0;
   _tracked.polyMats.length=0;
-  habitMesh=null;habitEdges=null;habitLabels=null;
 }
 
 // Apply lighting/material tweaks for current theme
@@ -2044,14 +1110,6 @@ function apply3DTheme(){
   _tracked.bondMats.forEach(m=>m.color.setHex(bondColor));
   const cellColor=theme==='light'?0x8a6a20:0xc9a84c;
   _tracked.cellMats.forEach(m=>m.color.setHex(cellColor));
-  // Habit mesh edges
-  if(habitEdges&&habitEdges.material){
-    habitEdges.material.color.setHex(theme==='light'?0x333333:0xffffff);
-  }
-  if(habitMesh&&habitMesh.material){
-    habitMesh.material.opacity=theme==='light'?0.65:0.72;
-    habitMesh.material.needsUpdate=true;
-  }
 }
 
 function showNoCrystal(msg){
@@ -2123,7 +1181,6 @@ initTheme();
 buildNav();
 initThree();
 loadFile('钻石_系统笔记.md','gem',0);
-<script defer src="https://cloud.umami.is/script.js" data-website-id="3c8fc7ee-2883-46a2-988a-52ef090a185c"></script>
 </script>
 </body>
 </html>
