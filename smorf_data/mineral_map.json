@@ -1,0 +1,314 @@
+{
+  "钻石": {
+    "smorfName": "Diamond",
+    "crystalFile": "Diamond_015",
+    "jsonFile": "diamond_015.json",
+    "binFile": "Diamond_015.smorf.bin",
+    "counts": {
+      "vertices": 6,
+      "quadFaces": 0,
+      "triFaces": 8,
+      "edges": 5,
+      "millerLabels": 8
+    }
+  },
+  "刚玉": {
+    "smorfName": "Corundum",
+    "crystalFile": "Corundum_D2",
+    "jsonFile": "corundum_d2.json",
+    "binFile": "Corundum_D2.smorf.bin",
+    "counts": {
+      "vertices": 24,
+      "quadFaces": 22,
+      "triFaces": 0,
+      "edges": 21,
+      "millerLabels": 20
+    }
+  },
+  "绿柱石": {
+    "smorfName": "Beryl",
+    "crystalFile": "Beryl_012",
+    "jsonFile": "beryl_012.json",
+    "binFile": "Beryl_012.smorf.bin",
+    "counts": {
+      "vertices": 50,
+      "quadFaces": 42,
+      "triFaces": 12,
+      "edges": 41,
+      "millerLabels": 30
+    }
+  },
+  "金绿宝石": {
+    "smorfName": "Chrysoberyl",
+    "crystalFile": "Chrysoberyl_D1",
+    "jsonFile": "chrysoberyl_d1.json",
+    "binFile": "Chrysoberyl_D1.smorf.bin",
+    "counts": {
+      "vertices": 68,
+      "quadFaces": 60,
+      "triFaces": 12,
+      "edges": 59,
+      "millerLabels": 40
+    }
+  },
+  "尖晶石": {
+    "smorfName": "Spinel",
+    "crystalFile": "Spinel_01",
+    "jsonFile": "spinel_01.json",
+    "binFile": "Spinel_01.smorf.bin",
+    "counts": {
+      "vertices": 6,
+      "quadFaces": 0,
+      "triFaces": 8,
+      "edges": 5,
+      "millerLabels": 8
+    }
+  },
+  "托帕石": {
+    "smorfName": "Topaz",
+    "crystalFile": "Topaz_188",
+    "jsonFile": "topaz_188.json",
+    "binFile": "Topaz_188.smorf.bin",
+    "counts": {
+      "vertices": 92,
+      "quadFaces": 84,
+      "triFaces": 12,
+      "edges": 78,
+      "millerLabels": 48
+    }
+  },
+  "橄榄石": {
+    "smorfName": "Olivine",
+    "crystalFile": "Olivine_031",
+    "jsonFile": "olivine_031.json",
+    "binFile": "Olivine_031.smorf.bin",
+    "counts": {
+      "vertices": 48,
+      "quadFaces": 42,
+      "triFaces": 8,
+      "edges": 39,
+      "millerLabels": 26
+    }
+  },
+  "水晶": {
+    "smorfName": "Quartz",
+    "crystalFile": "Quartz_007",
+    "jsonFile": "quartz_007.json",
+    "binFile": "Quartz_007.smorf.bin",
+    "counts": {
+      "vertices": 14,
+      "quadFaces": 6,
+      "triFaces": 12,
+      "edges": 11,
+      "millerLabels": 18
+    }
+  },
+  "萤石": {
+    "smorfName": "Fluorite",
+    "crystalFile": "Fluorite_001",
+    "jsonFile": "fluorite_001.json",
+    "binFile": "Fluorite_001.smorf.bin",
+    "counts": {
+      "vertices": 8,
+      "quadFaces": 6,
+      "triFaces": 0,
+      "edges": 6,
+      "millerLabels": 6
+    }
+  },
+  "锆石": {
+    "smorfName": "Zircon",
+    "crystalFile": "Zircon_024",
+    "jsonFile": "zircon_024.json",
+    "binFile": "Zircon_024.smorf.bin",
+    "counts": {
+      "vertices": 42,
+      "quadFaces": 32,
+      "triFaces": 16,
+      "edges": 39,
+      "millerLabels": 24
+    }
+  },
+  "方解石": {
+    "smorfName": "Calcite",
+    "crystalFile": "Calcite_0002",
+    "jsonFile": "calcite_0002.json",
+    "binFile": "Calcite_0002.smorf.bin",
+    "counts": {
+      "vertices": 8,
+      "quadFaces": 6,
+      "triFaces": 0,
+      "edges": 6,
+      "millerLabels": 6
+    }
+  },
+  "菱锰矿": {
+    "smorfName": "Rhodochrosite",
+    "crystalFile": "Rhodochrosite_07",
+    "jsonFile": "rhodochrosite_07.json",
+    "binFile": "Rhodochrosite_07.smorf.bin",
+    "counts": {
+      "vertices": 8,
+      "quadFaces": 6,
+      "triFaces": 0,
+      "edges": 6,
+      "millerLabels": 6
+    }
+  },
+  "蓝晶石": {
+    "smorfName": "Kyanite",
+    "crystalFile": "Kyanite_06",
+    "jsonFile": "kyanite_06.json",
+    "binFile": "Kyanite_06.smorf.bin",
+    "counts": {
+      "vertices": 16,
+      "quadFaces": 14,
+      "triFaces": 0,
+      "edges": 12,
+      "millerLabels": 10
+    }
+  },
+  "蓝锥矿": {
+    "smorfName": "Benitoite",
+    "crystalFile": "Benitoite_1",
+    "jsonFile": "benitoite_1.json",
+    "binFile": "Benitoite_1.smorf.bin",
+    "counts": {
+      "vertices": 24,
+      "quadFaces": 18,
+      "triFaces": 8,
+      "edges": 20,
+      "millerLabels": 20
+    }
+  },
+  "堇青石": {
+    "smorfName": "Cordierite",
+    "crystalFile": "Cordierite_07",
+    "jsonFile": "cordierite_07.json",
+    "binFile": "Cordierite_07.smorf.bin",
+    "counts": {
+      "vertices": 20,
+      "quadFaces": 18,
+      "triFaces": 0,
+      "edges": 18,
+      "millerLabels": 12
+    }
+  },
+  "赛黄晶": {
+    "smorfName": "Danburite",
+    "crystalFile": "Danburite_40",
+    "jsonFile": "danburite_40.json",
+    "binFile": "Danburite_40.smorf.bin",
+    "counts": {
+      "vertices": 60,
+      "quadFaces": 56,
+      "triFaces": 4,
+      "edges": 51,
+      "millerLabels": 32
+    }
+  },
+  "透辉石": {
+    "smorfName": "Diopside",
+    "crystalFile": "Diopside_135",
+    "jsonFile": "diopside_135.json",
+    "binFile": "Diopside_135.smorf.bin",
+    "counts": {
+      "vertices": 36,
+      "quadFaces": 30,
+      "triFaces": 8,
+      "edges": 31,
+      "millerLabels": 20
+    }
+  },
+  "电气石": {
+    "smorfName": "Tourmaline",
+    "crystalFile": "Tourmaline_004",
+    "jsonFile": "tourmaline_004.json",
+    "binFile": "Tourmaline_004.smorf.bin",
+    "counts": {
+      "vertices": 32,
+      "quadFaces": 27,
+      "triFaces": 6,
+      "edges": 26,
+      "millerLabels": 18
+    }
+  },
+  "磷灰石": {
+    "smorfName": "Apatite",
+    "crystalFile": "Apatite_001",
+    "jsonFile": "apatite_001.json",
+    "binFile": "Apatite_001.smorf.bin",
+    "counts": {
+      "vertices": 12,
+      "quadFaces": 10,
+      "triFaces": 0,
+      "edges": 9,
+      "millerLabels": 8
+    }
+  },
+  "方柱石": {
+    "smorfName": "Scapolite",
+    "crystalFile": "Scapolite_30",
+    "jsonFile": "scapolite_30.json",
+    "binFile": "Scapolite_30.smorf.bin",
+    "counts": {
+      "vertices": 42,
+      "quadFaces": 32,
+      "triFaces": 16,
+      "edges": 36,
+      "millerLabels": 24
+    }
+  },
+  "微斜长石": {
+    "smorfName": "Microcline",
+    "crystalFile": "Microcline_MH290",
+    "jsonFile": "microcline_mh290.json",
+    "binFile": "Microcline_MH290.smorf.bin",
+    "counts": {
+      "vertices": 36,
+      "quadFaces": 26,
+      "triFaces": 16,
+      "edges": 29,
+      "millerLabels": 24
+    }
+  },
+  "硅铍石": {
+    "smorfName": "Phenakite",
+    "crystalFile": "Phenakite_034",
+    "jsonFile": "phenakite_034.json",
+    "binFile": "Phenakite_034.smorf.bin",
+    "counts": {
+      "vertices": 50,
+      "quadFaces": 42,
+      "triFaces": 12,
+      "edges": 42,
+      "millerLabels": 30
+    }
+  },
+  "石榴石": {
+    "smorfName": "Garnet",
+    "crystalFile": "Garnet_01",
+    "jsonFile": "garnet_01.json",
+    "binFile": "Garnet_01.smorf.bin",
+    "counts": {
+      "vertices": 14,
+      "quadFaces": 12,
+      "triFaces": 0,
+      "edges": 10,
+      "millerLabels": 12
+    }
+  },
+  "黝帘石": {
+    "smorfName": "Zoisite",
+    "crystalFile": "Zoisite_04",
+    "jsonFile": "zoisite_04.json",
+    "binFile": "Zoisite_04.smorf.bin",
+    "counts": {
+      "vertices": 20,
+      "quadFaces": 18,
+      "triFaces": 0,
+      "edges": 17,
+      "millerLabels": 12
+    }
+  }
+}

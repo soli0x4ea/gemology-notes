@@ -1,8 +1,0 @@
-# 系统文件
-Thumbs.db
-.DS_Store
-*.bak
-
-# 临时文件
-tmp/
-temp/
