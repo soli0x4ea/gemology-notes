@@ -1,0 +1,57 @@
+data_titanite
+_chemical_name_common              'Titanite (Sphene)'
+_chemical_formula_sum               'CaTiSiO5'
+_cell_length_a                      6.5600
+_cell_length_b                      8.7200
+_cell_length_c                      7.4400
+_cell_angle_alpha                   90.00
+_cell_angle_beta                    119.90
+_cell_angle_gamma                   90.00
+_cell_formula_units_Z               4
+_symmetry_space_group_name_H-M      'P 1'
+_symmetry_Int_Tables_number         1
+_symmetry_original_H-M              'C2/c'
+_symmetry_original_Int_Tables_number 15
+_cell_volume                        368.94
+_citation_author_name               'Speer J.A., Gibbs G.V.'
+_citation_year                      1976
+_citation_journal_full              'Am. Mineral. 61, 238-247'
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+Ca1      Ca      0.000000    0.080000    0.250000 1.00
+Ca2      Ca      0.000000    0.920000    0.750000 1.00
+Ca3      Ca      0.500000    0.580000    0.250000 1.00
+Ca4      Ca      0.500000    0.420000    0.750000 1.00
+Ti5      Ti      0.000000    0.500000    0.250000 1.00
+Ti6      Ti      0.000000    0.500000    0.750000 1.00
+Ti7      Ti      0.500000    0.000000    0.250000 1.00
+Ti8      Ti      0.500000    0.000000    0.750000 1.00
+Si9      Si      0.000000    0.735000    0.250000 1.00
+Si10     Si      0.000000    0.265000    0.750000 1.00
+Si11     Si      0.500000    0.235000    0.250000 1.00
+Si12     Si      0.500000    0.765000    0.750000 1.00
+O13      O       0.000000    0.280000    0.250000 1.00
+O14      O       0.000000    0.720000    0.750000 1.00
+O15      O       0.500000    0.780000    0.250000 1.00
+O16      O       0.500000    0.220000    0.750000 1.00
+O17      O       0.110000    0.135000    0.070000 1.00
+O18      O       0.890000    0.865000    0.930000 1.00
+O19      O       0.890000    0.135000    0.430000 1.00
+O20      O       0.110000    0.865000    0.570000 1.00
+O21      O       0.610000    0.635000    0.070000 1.00
+O22      O       0.390000    0.365000    0.930000 1.00
+O23      O       0.390000    0.635000    0.430000 1.00
+O24      O       0.610000    0.365000    0.570000 1.00
+O25      O       0.125000    0.555000    0.410000 1.00
+O26      O       0.875000    0.445000    0.590000 1.00
+O27      O       0.875000    0.555000    0.090000 1.00
+O28      O       0.125000    0.445000    0.910000 1.00
+O29      O       0.625000    0.055000    0.410000 1.00
+O30      O       0.375000    0.945000    0.590000 1.00
+O31      O       0.375000    0.055000    0.090000 1.00
+O32      O       0.625000    0.945000    0.910000 1.00

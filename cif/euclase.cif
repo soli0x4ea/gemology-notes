@@ -1,0 +1,25 @@
+data_euclase
+_cell_length_a 4.763
+_cell_length_b 14.290
+_cell_length_c 4.618
+_cell_angle_alpha 90.0
+_cell_angle_beta 100.25
+_cell_angle_gamma 90.0
+_symmetry_space_group_name_H-M 'P 21/a'
+_symmetry_Int_Tables_number 14
+_cell_volume 309.6
+
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+Be1 Be 0.2450 0.1420 0.1430
+Al1 Al 0.2500 0.0830 0.6450
+Si1 Si 0.2850 0.2130 0.6280
+O1 O 0.0890 0.0880 0.2010
+O2 O 0.0980 0.1780 0.7640
+O3 O 0.4650 0.1540 0.5630
+O4 O 0.3840 0.2780 0.8880
+O5 O 0.2180 0.0100 0.4520

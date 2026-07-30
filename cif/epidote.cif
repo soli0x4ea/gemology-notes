@@ -1,0 +1,35 @@
+data_epidote
+_cell_length_a 8.890
+_cell_length_b 5.630
+_cell_length_c 10.150
+_cell_angle_alpha 90.0
+_cell_angle_beta 115.40
+_cell_angle_gamma 90.0
+_symmetry_space_group_name_H-M 'P 21/m'
+_symmetry_Int_Tables_number 11
+_cell_volume 459.00
+
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+Ca1 Ca 0.7580 0.2500 0.1540
+Ca2 Ca 0.6080 0.2500 0.4230
+Al1 Al 0.0000 0.0000 0.0000
+Al2 Al 0.0000 0.0000 0.5000
+Fe1 Fe 0.2980 0.2500 0.2120
+Si1 Si 0.3430 0.2500 0.0350
+Si2 Si 0.6830 0.2500 0.2770
+Si3 Si 0.1830 0.2500 0.3980
+O1 O 0.2380 0.0290 0.0280
+O2 O 0.3020 0.2500 0.1840
+O3 O 0.5240 0.0410 0.1970
+O4 O 0.6320 0.2500 0.1360
+O5 O 0.7910 0.0280 0.3380
+O6 O 0.0760 0.0320 0.3480
+O7 O 0.0380 0.2500 0.4580
+O8 O 0.2680 0.2500 0.2920
+O9 O 0.0500 0.2500 0.1330
+O10 O 0.4230 0.2500 0.3860

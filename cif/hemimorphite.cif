@@ -1,0 +1,27 @@
+data_hemimorphite
+_cell_length_a 8.370
+_cell_length_b 10.710
+_cell_length_c 5.120
+_cell_angle_alpha 90.0
+_cell_angle_beta 90.0
+_cell_angle_gamma 90.0
+_symmetry_space_group_name_H-M 'I m m 2'
+_symmetry_Int_Tables_number 44
+_cell_volume 458.8
+
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+Zn1 Zn 0.0000 0.3560 0.2470
+Zn2 Zn 0.1850 0.1060 0.6920
+Si1 Si 0.1880 0.3140 0.8330
+O1 O 0.0000 0.2020 0.0300
+O2 O 0.0000 0.4440 0.0200
+O3 O 0.0000 0.2500 0.5000
+O4 O 0.1450 0.1850 0.8920
+O5 O 0.2500 0.3750 0.6400
+O6 O 0.3200 0.0600 0.4200
+OH1 O 0.1000 0.0300 0.9200
