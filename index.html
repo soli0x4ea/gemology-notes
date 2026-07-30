@@ -110,6 +110,7 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
 .error-msg{padding:40px;text-align:center;color:#e06080;line-height:2}
 .no-crystal{display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-dim);font-size:14px;flex-direction:column;gap:10px;width:100%;text-align:center;padding:40px}
 .no-crystal-icon{font-size:40px;opacity:.3}
+.doc-footer{max-width:860px;margin:0 auto;padding:24px 40px 40px;border-top:1px solid var(--border);text-align:center;color:var(--text-dim);font-size:12px;line-height:1.8;letter-spacing:.3px}
 /* KaTeX theme overrides */
 .katex-block{display:block;text-align:center;margin:14px 0;overflow-x:auto;padding:4px 0}
 .katex-inline{display:inline}
@@ -155,6 +156,7 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
   .doc-content h2{font-size:18px}
   .doc-content h3{font-size:15px}
   .doc-content p,.doc-content li{font-size:13px;line-height:1.8}
+  .doc-footer{padding:20px 16px 30px;font-size:11px}
 }
 @media (max-width: 500px){
   .crystal-panel{height:340px}
@@ -162,9 +164,6 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
   .vc-btn{padding:3px 7px;font-size:10px}
   .header-meta{display:none}
 }
-.doc-footer{max-width:860px;margin:0 auto;padding:24px 40px 40px;text-align:center;font-size:12px;color:var(--text-dim,#999);line-height:1.8;border-top:1px solid var(--border,#444);margin-top:40px}
-.doc-footer a{color:var(--accent,#7c9aff);text-decoration:none}
-.doc-footer a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -214,6 +213,10 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
       </div>
       <div class="doc-area">
         <div class="doc-content" id="doc-content"><div class="loading">正在加载...</div></div>
+        <div class="doc-footer">
+          © 2026 系统宝石学笔记 · Gemology Notes<br>
+          作者：0x4ea · 内容仅供学习交流，转载请注明出处
+        </div>
       </div>
     </div>
   </div>
@@ -1580,12 +1583,6 @@ initTheme();
 buildNav();
 initThree();
 loadFile('钻石_系统笔记.md','gem',0);
-// ==================== 访问统计 ====================
 </script>
-<div class="doc-footer">
-  &copy; 2026 系统宝石学笔记 &middot; Gemology Notes<br>
-  作者：0x4ea &middot; 内容仅供学习交流，转载请注明出处
-</div>
-<script defer src="https://cloud.umami.is/script.js" data-website-id="3c8fc7ee-2883-46a2-988a-52ef090a185c"></script>
 </body>
 </html>
