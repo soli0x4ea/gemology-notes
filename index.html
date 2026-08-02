@@ -59,6 +59,10 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
 .nav-badge{margin-left:auto;font-size:9px;padding:1px 5px;border-radius:3px;background:var(--bg4);color:var(--text-dim);letter-spacing:0;flex-shrink:0}
 .nav-badge.has3d{background:rgba(74,158,255,.15);color:var(--accent)}
 .nav-badge.no3d{background:rgba(160,100,200,.1);color:#a080c0}
+.nav-item.locked{opacity:.35;cursor:not-allowed;pointer-events:none;text-decoration:line-through;text-decoration-color:var(--text-dim);text-decoration-thickness:1px;color:var(--text-dim)}
+.nav-item.locked .nav-dot{opacity:.4}
+.nav-item.locked .nav-badge{opacity:.5}
+.nav-section-title.locked-section{opacity:.45}
 .nav-section-title .lock-icon{font-size:10px;margin-left:4px;color:var(--text-dim)}
 .sidebar-backdrop{display:none;position:fixed;inset:0;background:var(--overlay);z-index:15}
 .content-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
@@ -224,6 +228,19 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
 </div>
 
 <script>
+// ══════════════════════════════════════════════
+// 生产环境内容限制规则 (PRODUCTION_RESTRICTIONS)
+// ══════════════════════════════════════════════
+// 内容全部拉取到本地，但被限制的类目菜单变灰不可点击
+const PRODUCTION_RESTRICTIONS = {
+  gems:       { open: 6 },    // 宝石各论：只能看前6篇
+  metals:     null,           // 金属单质：全部开放
+  jades:      null,           // 玉石专题：全部开放
+  organics:   null,           // 有机宝石：全部开放
+  instruments:{ open: 3 },    // 仪器与量子光学：只能看前3篇
+  // aux（辅助文档）：无限制，全部开放
+};
+
 // ==================== 文件清单 ====================
 // cif: 对应的CIF文件（位于cif/目录）
 const GEM_FILES = [
@@ -233,6 +250,48 @@ const GEM_FILES = [
   {file:'金绿宝石_系统笔记.md',name:'金绿宝石 Chrysoberyl（变石/猫眼）',color:'#50a0c0',struct:'chrysoberyl',cif:'cif/chrysoberyl.cif'},
   {file:'水晶_系统笔记.md',name:'水晶 Quartz（紫晶/黄晶/烟晶）',color:'#9060c0',struct:'quartz',cif:'cif/quartz.cif'},
   {file:'尖晶石_系统笔记.md',name:'尖晶石 Spinel',color:'#d04080',struct:'spinel',cif:'cif/spinel.cif'},
+  {file:'电气石_系统笔记.md',name:'电气石 Tourmaline',color:'#40a060',struct:'elbaite',cif:'cif/elbaite.cif'},
+  {file:'石榴石族_系统笔记.md',name:'石榴石族 Garnet Group',color:'#c03040',struct:'pyrope',cif:'cif/pyrope.cif'},
+  {file:'锆石_系统笔记.md',name:'锆石 Zircon',color:'#c08040',struct:'zircon',cif:'cif/zircon.cif'},
+  {file:'托帕石_系统笔记.md',name:'托帕石 Topaz',color:'#d08030',struct:'topaz',cif:'cif/topaz.cif'},
+  {file:'橄榄石_系统笔记.md',name:'橄榄石 Olivine（Peridot）',color:'#80b030',struct:'forsterite',cif:'cif/forsterite.cif'},
+  {file:'长石族_系统笔记.md',name:'长石族 Feldspar Group',color:'#c0a060',struct:'microcline',cif:'cif/microcline.cif'},
+  {file:'辉石族_系统笔记.md',name:'辉石族 Pyroxene Group',color:'#608040',struct:'diopside',cif:'cif/diopside.cif'},
+  {file:'榍石_系统笔记.md',name:'榍石 Titanite (Sphene)',color:'#c0a030',struct:'titanite',cif:'cif/titanite.cif'},
+  {file:'红柱石_系统笔记.md',name:'红柱石 Andalusite',color:'#c07040',struct:'andalusite',cif:'cif/andalusite.cif'},
+  {file:'方钠石_系统笔记.md',name:'方钠石 Sodalite',color:'#4060c0',struct:'sodalite',cif:'cif/sodalite.cif'},
+  {file:'蓝方石_系统笔记.md',name:'蓝方石 Hauyne',color:'#3050d0',struct:'hauyne',cif:'cif/hauyne.cif'},
+  {file:'磷灰石_系统笔记.md',name:'磷灰石 Apatite',color:'#60b080',struct:'fluorapatite',cif:'cif/fluorapatite.cif'},
+  {file:'蓝锥矿_系统笔记.md',name:'蓝锥矿 Benitoite',color:'#5080d0',struct:'benitoite',cif:'cif/benitoite.cif'},
+  {file:'塔菲石_系统笔记.md',name:'塔菲石 Taaffeite',color:'#b080d0',struct:null,cif:null},
+  {file:'黝帘石_系统笔记.md',name:'黝帘石 Zoisite（坦桑石）',color:'#5060c0',struct:'zoisite',cif:'cif/zoisite.cif'},
+  {file:'堇青石_系统笔记.md',name:'堇青石 Cordierite',color:'#6070a0',struct:'cordierite',cif:'cif/cordierite.cif'},
+  {file:'蓝晶石_系统笔记.md',name:'蓝晶石 Kyanite',color:'#5080c0',struct:'kyanite',cif:'cif/kyanite.cif'},
+  {file:'硅铍石_系统笔记.md',name:'硅铍石 Phenakite',color:'#e0d0b0',struct:'phenakite',cif:'cif/phenakite.cif'},
+  {file:'赛黄晶_系统笔记.md',name:'赛黄晶 Danburite',color:'#f0e0a0',struct:'danburite',cif:'cif/danburite.cif'},
+  {file:'方柱石_系统笔记.md',name:'方柱石 Scapolite',color:'#c0b090',struct:'meionite',cif:'cif/meionite.cif'},
+  {file:'硼铝石_系统笔记.md',name:'硼铝石 Jeremejevite',color:'#80c0e0',struct:'jeremejevite',cif:'cif/jeremejevite.cif'},
+  {file:'葡萄石_系统笔记.md',name:'葡萄石 Prehnite',color:'#a0d080',struct:'prehnite',cif:'cif/prehnite.cif'},
+  {file:'紫硅碱钙石_系统笔记.md',name:'紫硅碱钙石 Charoite（查罗石）',color:'#a060c0',struct:null,cif:'cif/charoite.txt'},
+  {file:'欧泊_系统笔记.md',name:'欧泊 Opal',color:'#f0a060',struct:'opal',cif:'cif/opal.txt'},
+  {file:'萤石_系统笔记.md',name:'萤石 Fluorite',color:'#80e0c0',struct:'fluorite',cif:'cif/fluorite.cif'},
+  {file:'菱锰矿_系统笔记.md',name:'菱锰矿 Rhodochrosite',color:'#e06080',struct:'rhodochrosite',cif:'cif/rhodochrosite.cif'},
+  {file:'方解石_系统笔记.md',name:'方解石 Calcite（冰洲石）',color:'#e0c0d0',struct:'calcite',cif:'cif/calcite.cif'},
+  {file:'翡翠_系统笔记.md',name:'翡翠 Jadeite（硬玉/A/B/C货鉴别）',color:'#2e8b57',struct:'jadeite',cif:null},
+  {file:'绿松石_系统笔记.md',name:'绿松石 Turquoise',color:'#40b0c0',struct:'turquoise',cif:null},
+  {file:'绿帘石_系统笔记.md',name:'绿帘石 Epidote',color:'#508030',struct:'epidote',cif:'cif/epidote.cif'},
+  {file:'锡石_系统笔记.md',name:'锡石 Cassiterite',color:'#503020',struct:'cassiterite',cif:'cif/cassiterite.cif'},
+  {file:'白钨矿_系统笔记.md',name:'白钨矿 Scheelite',color:'#f0c050',struct:'scheelite',cif:'cif/scheelite.cif'},
+  {file:'金红石_系统笔记.md',name:'金红石 Rutile',color:'#801010',struct:'rutile',cif:'cif/rutile.cif'},
+  {file:'蓝柱石_系统笔记.md',name:'蓝柱石 Euclase',color:'#80c0e0',struct:'euclase',cif:'cif/euclase.cif'},
+  {file:'符山石_系统笔记.md',name:'符山石 Vesuvianite (Idocrase)',color:'#60a040',struct:'vesuvianite',cif:'cif/vesuvianite.cif'},
+  {file:'异极矿_系统笔记.md',name:'异极矿 Hemimorphite',color:'#60b0d0',struct:'hemimorphite',cif:'cif/hemimorphite.cif'},
+  {file:'斧石_系统笔记.md',name:'斧石 Axinite',color:'#805080',struct:'axinite',cif:'cif/axinite.cif'},
+  {file:'透视石_系统笔记.md',name:'透视石 Dioptase (翠铜矿)',color:'#008040',struct:'dioptase',cif:'cif/dioptase.cif'},
+  {file:'鱼眼石_系统笔记.md',name:'鱼眼石 Apophyllite',color:'#c0e0d0',struct:'apophyllite',cif:'cif/apophyllite.cif'},
+  {file:'十字石_系统笔记.md',name:'十字石 Staurolite',color:'#603020',struct:'staurolite',cif:'cif/staurolite.cif'},
+  {file:'赤铁矿_系统笔记.md',name:'赤铁矿 Hematite',color:'#403030',struct:'hematite',cif:'cif/hematite.cif'},
+  {file:'矽线石_系统笔记.md',name:'矽线石 Sillimanite',color:'#9090b0',struct:'sillimanite',cif:'cif/sillimanite.cif'},
 ];
 
 // 金属单质专题（自然元素矿物——金属类）
@@ -257,6 +316,13 @@ const INSTRUMENT_FILES = [
   {file:'10倍放大镜光学设计原理.md',name:'10×放大镜光学设计原理'},
   {file:'偏光镜_结构原理与宝石学应用.md',name:'偏光镜：结构原理与宝石学应用'},
   {file:'偏光镜对不同产地琥珀的鉴定意义.md',name:'偏光镜对不同产地琥珀的鉴定意义'},
+  {file:'分光镜_结构原理与宝石学应用.md',name:'分光镜：结构原理与宝石学应用'},
+  {file:'宝石紫外荧光_量子力学解释.md',name:'宝石紫外荧光的量子力学解释'},
+  {file:'其他小仪器及大型仪器.md',name:'其他小仪器及大型仪器'},
+  {file:'双折射的量子力学解释.md',name:'双折射的量子力学解释'},
+  {file:'双折射后的光是否纠缠态.md',name:'双折射后的光是否为纠缠态'},
+  {file:'双折射的量子力学解释与纠缠态分析.md',name:'双折射的量子力学解释与纠缠态分析'},
+  {file:'长石族光学计算.md',name:'长石族光学计算'},
 ];
 
 /* ========= Visible absorption spectra (380-750nm) =========
@@ -506,11 +572,15 @@ function buildNav(){
   const oEl=document.getElementById('nav-organics');
   const iEl=document.getElementById('nav-instruments');
   const aEl=document.getElementById('nav-aux');
-  function renderSection(el, files, typeName, firstActive){
+  const R=PRODUCTION_RESTRICTIONS;
+  // Helper: apply restriction to an array of files
+  function renderRestricted(el, files, restrictOpen, typeName, firstActive){
     files.forEach((f,i)=>{
       const d=document.createElement('div');
+      const isLocked = restrictOpen != null && i >= restrictOpen;
       let cls='nav-item';
       if(firstActive && i===0) cls+=' active';
+      if(isLocked) cls+=' locked';
       d.className=cls;
       const hasCif = f.cif && f.cif.endsWith('.cif');
       const hasSmorfHabit = f.struct && typeof SMORF_DATA !== 'undefined' && SMORF_DATA[f.struct] && SMORF_DATA[f.struct].forms && SMORF_DATA[f.struct].forms.length > 0;
@@ -519,32 +589,52 @@ function buildNav(){
       if(hasCif||hasSmorfHabit){badge='<span class="nav-badge has3d">3D</span>';}
       else if(isNonCrystal){badge='<span class="nav-badge no3d">非晶</span>';}
       else if(!f.cif){badge='<span class="nav-badge no3d">—</span>';}
+      if(isLocked){badge+='<span class="nav-badge" style="background:rgba(255,100,80,.15);color:#e06050">🔒</span>';}
       d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}${badge}`;
-      d.onclick=()=>loadFile(f.file,typeName,i);
+      if(!isLocked){
+        d.onclick=()=>loadFile(f.file,typeName,i);
+      }
       d.dataset.file=f.file;
       el.appendChild(d);
     });
   }
 
-  renderSection(gEl, GEM_FILES, 'gem', true);
+  let gemsWith3D=0,gemsNo3D=0;
+  renderRestricted(gEl, GEM_FILES, R.gems.open, 'gem', true);
+  // Update count badge
   const countEl=document.getElementById('nav-gems-count');
-  if(countEl)countEl.textContent=`${GEM_FILES.length}篇`;
+  if(countEl)countEl.innerHTML=`${R.gems.open}/${GEM_FILES.length}篇`;
 
-  renderSection(mEl, METAL_FILES, 'metal', false);
+  // 金属单质专题
+  const metalsOpen = R.metals ? R.metals.open : undefined;
+  renderRestricted(mEl, METAL_FILES, metalsOpen, 'metal', false);
   const mCountEl=document.getElementById('nav-metals-count');
   if(mCountEl)mCountEl.textContent=`${METAL_FILES.length}种`;
+  const mTitle=mCountEl&&mCountEl.parentElement;
+  if(mTitle&&R.metals&&R.metals.open===0)mTitle.classList.add('locked-section');
 
-  renderSection(jEl, JADE_FILES, 'jade', false);
+  // 玉石专题
+  const jadesOpen = R.jades ? R.jades.open : undefined;
+  renderRestricted(jEl, JADE_FILES, jadesOpen, 'jade', false);
   const jc=document.getElementById('nav-jades-count');
   if(jc)jc.textContent=`${JADE_FILES.length}篇`;
+  const jTitle=jc&&jc.parentElement;
+  if(jTitle&&R.jades&&R.jades.open===0)jTitle.classList.add('locked-section');
 
-  renderSection(oEl, ORGANIC_FILES, 'organic', false);
+  // 有机宝石专题
+  const organicsOpen = R.organics ? R.organics.open : undefined;
+  renderRestricted(oEl, ORGANIC_FILES, organicsOpen, 'organic', false);
   const oc=document.getElementById('nav-organics-count');
   if(oc)oc.textContent=`${ORGANIC_FILES.length}篇`;
+  const oTitle=oc&&oc.parentElement;
+  if(oTitle&&R.organics&&R.organics.open===0)oTitle.classList.add('locked-section');
 
-  renderSection(iEl, INSTRUMENT_FILES, 'instrument', false);
+  // 仪器与量子光学 — 只开放前3篇
+  renderRestricted(iEl, INSTRUMENT_FILES, R.instruments.open, 'instrument', false);
   const ic=document.getElementById('nav-instruments-count');
-  if(ic)ic.textContent=`${INSTRUMENT_FILES.length}篇`;
+  if(ic)ic.innerHTML=`${R.instruments.open}/${INSTRUMENT_FILES.length}篇`;
+  const iTitle=ic&&ic.parentElement;
+  if(iTitle&&R.instruments.open<INSTRUMENT_FILES.length)iTitle.classList.add('locked-section');
 
   // 辅助文档 — 全部开放
   AUX_FILES.forEach(f=>{
