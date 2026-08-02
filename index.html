@@ -234,9 +234,9 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
 // 内容全部拉取到本地，但被限制的类目菜单变灰不可点击
 const PRODUCTION_RESTRICTIONS = {
   gems:       { open: 6 },    // 宝石各论：只能看前6篇
-  metals:     { open: 0 },    // 金属单质：完全锁定
-  jades:      { open: 0 },    // 玉石专题：完全锁定
-  organics:   { open: 0 },    // 有机宝石：完全锁定
+  metals:     null,           // 金属单质：全部开放
+  jades:      null,           // 玉石专题：全部开放
+  organics:   null,           // 有机宝石：全部开放
   instruments:{ open: 3 },    // 仪器与量子光学：只能看前3篇
   // aux（辅助文档）：无限制，全部开放
 };
@@ -577,7 +577,7 @@ function buildNav(){
   function renderRestricted(el, files, restrictOpen, typeName, firstActive){
     files.forEach((f,i)=>{
       const d=document.createElement('div');
-      const isLocked = restrictOpen !== undefined && i >= restrictOpen;
+      const isLocked = restrictOpen != null && i >= restrictOpen;
       let cls='nav-item';
       if(firstActive && i===0) cls+=' active';
       if(isLocked) cls+=' locked';
@@ -605,27 +605,29 @@ function buildNav(){
   const countEl=document.getElementById('nav-gems-count');
   if(countEl)countEl.innerHTML=`${R.gems.open}/${GEM_FILES.length}篇`;
 
-  // 金属单质专题 — 完全锁定
-  renderRestricted(mEl, METAL_FILES, R.metals.open, 'metal', false);
+  // 金属单质专题
+  const metalsOpen = R.metals ? R.metals.open : undefined;
+  renderRestricted(mEl, METAL_FILES, metalsOpen, 'metal', false);
   const mCountEl=document.getElementById('nav-metals-count');
   if(mCountEl)mCountEl.textContent=`${METAL_FILES.length}种`;
-  // Add lock to section title
   const mTitle=mCountEl&&mCountEl.parentElement;
-  if(mTitle&&R.metals.open===0)mTitle.classList.add('locked-section');
+  if(mTitle&&R.metals&&R.metals.open===0)mTitle.classList.add('locked-section');
 
-  // 玉石专题 — 完全锁定
-  renderRestricted(jEl, JADE_FILES, R.jades.open, 'jade', false);
+  // 玉石专题
+  const jadesOpen = R.jades ? R.jades.open : undefined;
+  renderRestricted(jEl, JADE_FILES, jadesOpen, 'jade', false);
   const jc=document.getElementById('nav-jades-count');
   if(jc)jc.textContent=`${JADE_FILES.length}篇`;
   const jTitle=jc&&jc.parentElement;
-  if(jTitle&&R.jades.open===0)jTitle.classList.add('locked-section');
+  if(jTitle&&R.jades&&R.jades.open===0)jTitle.classList.add('locked-section');
 
-  // 有机宝石专题 — 完全锁定
-  renderRestricted(oEl, ORGANIC_FILES, R.organics.open, 'organic', false);
+  // 有机宝石专题
+  const organicsOpen = R.organics ? R.organics.open : undefined;
+  renderRestricted(oEl, ORGANIC_FILES, organicsOpen, 'organic', false);
   const oc=document.getElementById('nav-organics-count');
   if(oc)oc.textContent=`${ORGANIC_FILES.length}篇`;
   const oTitle=oc&&oc.parentElement;
-  if(oTitle&&R.organics.open===0)oTitle.classList.add('locked-section');
+  if(oTitle&&R.organics&&R.organics.open===0)oTitle.classList.add('locked-section');
 
   // 仪器与量子光学 — 只开放前3篇
   renderRestricted(iEl, INSTRUMENT_FILES, R.instruments.open, 'instrument', false);
