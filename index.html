@@ -59,6 +59,11 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
 .nav-badge{margin-left:auto;font-size:9px;padding:1px 5px;border-radius:3px;background:var(--bg4);color:var(--text-dim);letter-spacing:0;flex-shrink:0}
 .nav-badge.has3d{background:rgba(74,158,255,.15);color:var(--accent)}
 .nav-badge.no3d{background:rgba(160,100,200,.1);color:#a080c0}
+.nav-item.locked{opacity:.35;cursor:not-allowed;pointer-events:none;text-decoration:line-through;text-decoration-color:var(--text-dim);text-decoration-thickness:1px;color:var(--text-dim)}
+.nav-item.locked .nav-dot{opacity:.4}
+.nav-item.locked .nav-badge{opacity:.5}
+.nav-section-title.locked-section{opacity:.45}
+.nav-section-title .lock-icon{font-size:10px;margin-left:4px;color:var(--text-dim)}
 .sidebar-backdrop{display:none;position:fixed;inset:0;background:var(--overlay);z-index:15}
 .content-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .crystal-panel{height:380px;background:linear-gradient(180deg,var(--crystal-bg1) 0%,var(--crystal-bg2) 100%);border-bottom:1px solid var(--border);position:relative;flex-shrink:0;display:flex;overflow:hidden;transition:height .25s ease,border-bottom-width .25s ease}
@@ -223,6 +228,19 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
 </div>
 
 <script>
+// ══════════════════════════════════════════════
+// 生产环境内容限制规则 (PRODUCTION_RESTRICTIONS)
+// ══════════════════════════════════════════════
+// 内容全部拉取到本地，但被限制的类目菜单变灰不可点击
+const PRODUCTION_RESTRICTIONS = {
+  gems:       { open: 6 },    // 宝石各论：只能看前6篇
+  metals:     { open: 0 },    // 金属单质：完全锁定
+  jades:      { open: 0 },    // 玉石专题：完全锁定
+  organics:   { open: 0 },    // 有机宝石：完全锁定
+  instruments:{ open: 3 },    // 仪器与量子光学：只能看前3篇
+  // aux（辅助文档）：无限制，全部开放
+};
+
 // ==================== 文件清单 ====================
 // cif: 对应的CIF文件（位于cif/目录）
 const GEM_FILES = [
@@ -554,64 +572,69 @@ function buildNav(){
   const oEl=document.getElementById('nav-organics');
   const iEl=document.getElementById('nav-instruments');
   const aEl=document.getElementById('nav-aux');
+  const R=PRODUCTION_RESTRICTIONS;
+  // Helper: apply restriction to an array of files
+  function renderRestricted(el, files, restrictOpen, typeName, firstActive){
+    files.forEach((f,i)=>{
+      const d=document.createElement('div');
+      const isLocked = restrictOpen !== undefined && i >= restrictOpen;
+      let cls='nav-item';
+      if(firstActive && i===0) cls+=' active';
+      if(isLocked) cls+=' locked';
+      d.className=cls;
+      const hasCif = f.cif && f.cif.endsWith('.cif');
+      const hasSmorfHabit = f.struct && typeof SMORF_DATA !== 'undefined' && SMORF_DATA[f.struct] && SMORF_DATA[f.struct].forms && SMORF_DATA[f.struct].forms.length > 0;
+      const isNonCrystal = f.cif && f.cif.endsWith('.txt') && f.name.includes('欧泊');
+      let badge='';
+      if(hasCif||hasSmorfHabit){badge='<span class="nav-badge has3d">3D</span>';}
+      else if(isNonCrystal){badge='<span class="nav-badge no3d">非晶</span>';}
+      else if(!f.cif){badge='<span class="nav-badge no3d">—</span>';}
+      if(isLocked){badge+='<span class="nav-badge" style="background:rgba(255,100,80,.15);color:#e06050">🔒</span>';}
+      d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}${badge}`;
+      if(!isLocked){
+        d.onclick=()=>loadFile(f.file,typeName,i);
+      }
+      d.dataset.file=f.file;
+      el.appendChild(d);
+    });
+  }
+
   let gemsWith3D=0,gemsNo3D=0;
-  GEM_FILES.forEach((f,i)=>{
-    const d=document.createElement('div');
-    d.className='nav-item'+(i===0?' active':'');
-    const hasCif = f.cif && f.cif.endsWith('.cif');
-    const hasSmorfHabit = f.struct && typeof SMORF_DATA !== 'undefined' && SMORF_DATA[f.struct] && SMORF_DATA[f.struct].forms && SMORF_DATA[f.struct].forms.length > 0;
-    const isNonCrystal = f.cif && f.cif.endsWith('.txt') && f.name.includes('欧泊');
-    let badge='';
-    if(hasCif||hasSmorfHabit){badge='<span class="nav-badge has3d">3D</span>';gemsWith3D++;}
-    else if(isNonCrystal){badge='<span class="nav-badge no3d">非晶</span>';gemsNo3D++;}
-    else{badge='<span class="nav-badge no3d">—</span>';gemsNo3D++;}
-    d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}${badge}`;
-    d.onclick=()=>loadFile(f.file,'gem',i);
-    d.dataset.file=f.file;
-    gEl.appendChild(d);
-  });
+  renderRestricted(gEl, GEM_FILES, R.gems.open, 'gem', true);
   // Update count badge
   const countEl=document.getElementById('nav-gems-count');
-  if(countEl)countEl.textContent=`${GEM_FILES.length}篇`;
-  // 金属单质专题
-  METAL_FILES.forEach((f,i)=>{
-    const d=document.createElement('div');
-    d.className='nav-item';
-    const hasCif = f.cif && f.cif.endsWith('.cif');
-    const hasSmorfHabit = f.struct && typeof SMORF_DATA !== 'undefined' && SMORF_DATA[f.struct] && SMORF_DATA[f.struct].forms && SMORF_DATA[f.struct].forms.length > 0;
-    let badge='';
-    if(hasCif||hasSmorfHabit){badge='<span class="nav-badge has3d">3D</span>';}
-    d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}${badge}`;
-    d.onclick=()=>loadFile(f.file,'metal',i);
-    d.dataset.file=f.file;
-    mEl.appendChild(d);
-  });
+  if(countEl)countEl.innerHTML=`${R.gems.open}/${GEM_FILES.length}篇`;
+
+  // 金属单质专题 — 完全锁定
+  renderRestricted(mEl, METAL_FILES, R.metals.open, 'metal', false);
   const mCountEl=document.getElementById('nav-metals-count');
   if(mCountEl)mCountEl.textContent=`${METAL_FILES.length}种`;
-  JADE_FILES.forEach((f,i)=>{
-    const d=document.createElement('div');
-    d.className='nav-item';
-    d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}<span class="nav-badge no3d">玉石</span>`;
-    d.onclick=()=>loadFile(f.file,'jade');
-    d.dataset.file=f.file;
-    jEl.appendChild(d);
-  });
-  ORGANIC_FILES.forEach((f,i)=>{
-    const d=document.createElement('div');
-    d.className='nav-item';
-    d.innerHTML=`<span class="nav-dot" style="background:${f.color}"></span>${f.name}<span class="nav-badge no3d">有机</span>`;
-    d.onclick=()=>loadFile(f.file,'organic');
-    d.dataset.file=f.file;
-    oEl.appendChild(d);
-  });
-  INSTRUMENT_FILES.forEach(f=>{
-    const d=document.createElement('div');
-    d.className='nav-item';
-    d.innerHTML=`<span class="nav-dot" style="background:#607090"></span>${f.name}`;
-    d.onclick=()=>loadFile(f.file,'instrument');
-    d.dataset.file=f.file;
-    iEl.appendChild(d);
-  });
+  // Add lock to section title
+  const mTitle=mCountEl&&mCountEl.parentElement;
+  if(mTitle&&R.metals.open===0)mTitle.classList.add('locked-section');
+
+  // 玉石专题 — 完全锁定
+  renderRestricted(jEl, JADE_FILES, R.jades.open, 'jade', false);
+  const jc=document.getElementById('nav-jades-count');
+  if(jc)jc.textContent=`${JADE_FILES.length}篇`;
+  const jTitle=jc&&jc.parentElement;
+  if(jTitle&&R.jades.open===0)jTitle.classList.add('locked-section');
+
+  // 有机宝石专题 — 完全锁定
+  renderRestricted(oEl, ORGANIC_FILES, R.organics.open, 'organic', false);
+  const oc=document.getElementById('nav-organics-count');
+  if(oc)oc.textContent=`${ORGANIC_FILES.length}篇`;
+  const oTitle=oc&&oc.parentElement;
+  if(oTitle&&R.organics.open===0)oTitle.classList.add('locked-section');
+
+  // 仪器与量子光学 — 只开放前3篇
+  renderRestricted(iEl, INSTRUMENT_FILES, R.instruments.open, 'instrument', false);
+  const ic=document.getElementById('nav-instruments-count');
+  if(ic)ic.innerHTML=`${R.instruments.open}/${INSTRUMENT_FILES.length}篇`;
+  const iTitle=ic&&ic.parentElement;
+  if(iTitle&&R.instruments.open<INSTRUMENT_FILES.length)iTitle.classList.add('locked-section');
+
+  // 辅助文档 — 全部开放
   AUX_FILES.forEach(f=>{
     const d=document.createElement('div');
     d.className='nav-item';
@@ -620,13 +643,6 @@ function buildNav(){
     d.dataset.file=f.file;
     aEl.appendChild(d);
   });
-  // Set counts for remaining sections
-  const jc=document.getElementById('nav-jades-count');
-  if(jc)jc.textContent=`${JADE_FILES.length}篇`;
-  const oc=document.getElementById('nav-organics-count');
-  if(oc)oc.textContent=`${ORGANIC_FILES.length}篇`;
-  const ic=document.getElementById('nav-instruments-count');
-  if(ic)ic.textContent=`${INSTRUMENT_FILES.length}篇`;
   const ac=document.getElementById('nav-aux-count');
   if(ac)ac.textContent=`${AUX_FILES.length}篇`;
 }
