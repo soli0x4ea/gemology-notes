@@ -168,10 +168,29 @@ html,body{height:100%;font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei"
   .crystal-info{max-height:160px}
   .vc-btn{padding:3px 7px;font-size:10px}
   .header-meta{display:none}
+  }
+  /* APK下载横幅 */
+  .apk-banner{background:linear-gradient(135deg,#1a3a1a,#0d2b0d);border-bottom:1px solid #2d6a2d;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+  .apk-banner span{color:#a8d8a8;font-size:13px}
+  .apk-banner a{background:#2d8a2d;color:#fff;padding:5px 14px;border-radius:4px;text-decoration:none;font-size:12px;font-weight:600;transition:background .2s}
+  .apk-banner a:hover{background:#3aa83a}
+  [data-theme="light"] .apk-banner{background:linear-gradient(135deg,#d4edda,#c3e6cb);border-bottom:1px solid #a3d9a5}
+  [data-theme="light"] .apk-banner span{color:#155724}
+  [data-theme="light"] .apk-banner a{background:#28a745}
+  [data-theme="light"] .apk-banner a:hover{background:#218838}
+  .apk-banner .close-banner{background:none;border:none;color:#6a9e6a;cursor:pointer;font-size:16px;padding:0 4px}
+  .apk-banner .close-banner:hover{color:#a8d8a8}
+  [data-theme="light"] .apk-banner .close-banner{color:#6c757d}
+  [data-theme="light"] .apk-banner .close-banner:hover{color:#333}
 }
 </style>
 </head>
 <body>
+<div class="apk-banner" id="apk-banner">
+  <span>📱 宝石学笔记 Android v1.0.6</span>
+  <a href="宝石学笔记_v1.0.6.apk" download>⬇ 下载 APK (69.7 MB)</a>
+  <button class="close-banner" onclick="document.getElementById('apk-banner').remove()" title="关闭">✕</button>
+</div>
 <div class="app">
   <div class="header">
     <button class="icon-btn menu-btn" id="menu-btn" title="目录">☰</button>
